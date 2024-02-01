@@ -80,7 +80,7 @@ void sendSerial(int8_t serialPort, int16_t uEnableMotors, int16_t uControlMode, 
                                         Command.speedMaster ^ 
                                         Command.speedSlave);
   #ifdef PRINT_SERIAL_DATA
-  inf << Command.start << " , " << Command.enableMotors << " , " << Command.controlMode  << " , " << Command.speedMaster << " , " << Command.speedSlave << " , " << Command.checksum << " , " << serialPort << endl;
+  //inf << Command.start << " , " << Command.enableMotors << " , " << Command.controlMode  << " , " << Command.speedMaster << " , " << Command.speedSlave << " , " << Command.checksum << " , " << serialPort << endl;
   #endif
   // Write to Serial
   serial->write((uint8_t *) &Command, sizeof(Command)); 

@@ -43,7 +43,7 @@
 #define HOVER_SERIAL_BAUD   115200      // [-] Baud rate for HoverSerial (used to communicate with the hoverboard)
 #define START_FRAME         0xABCD     	// [-] Start frme definition for reliable serial communication
 #define TIME_SEND           50          // [ms] Sending time interval
-// #define PRINT_SERIAL_DATA
+#define PRINT_SERIAL_DATA
 // #define DEBUG_SERIAL_RX              // [-] Debug received data. Prints all bytes to serial (comment-out to disable)
 
 
