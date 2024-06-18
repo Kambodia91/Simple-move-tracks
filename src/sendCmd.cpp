@@ -24,9 +24,14 @@ SerialFeedback Feedback_Serial1,
 //------------------------------------------------------------------------
 // variables 
 //------------------------------------------------------------------------
+uint32_t loop_counter;
 unsigned long iTimeSend = 0;
-bool enable = 0;                                                          // from blynk
-byte controlMode = 0;                                                     // from blynk
+// bool enable_Blynk = 0;                                // from blynk | 0 = OFF | 1 = ON |
+byte controlMode_Blynk = 0;                     // from blynk | 0 = OPEN_Mode | 1 = FOC_Voltege | 2 = FOC_Speed | 3 = FOC_Torque | 4 = SIN_CTRL | 5 = COMM_CTRL |
+// uint8_t test;
+// uint8_t movement;
+bool enable_1 = 0;                         // from moweTrack
+bool enable_2 = 0;                         // from moweTrack
 
 uint8_t idx_Serial1 = 0;                        // Index for new data pointer
 uint16_t bufStartFrame_Serial1;                 // Buffer Start Frame
@@ -44,6 +49,12 @@ bool available_Serial2 = 1;
 
 bool serial1Blynk;
 bool serial2Blynk;
+
+uint16_t timeoutCntSerial_2 = SERIAL_TIMEOUT;  // Timeout counter for Rx Serial command
+uint8_t  timeoutFlgSerial_2 = 0;               // Timeout Flag for Rx Serial command: 0 = OK, 1 = Problem detected (line disconnected or wrong Rx data)
+
+
+
 
 //------------------------------------------------------------------------
 // sending procedure
@@ -174,6 +185,10 @@ void Receive_serial_2()
         bufStartFrame_Serial2	= ((uint16_t)(incomingByte_Serial2) << 8) | incomingBytePrev_Serial2;       // Construct the start frame
     }
     else {
+      if (timeoutCntSerial_2++ >= SERIAL_TIMEOUT) {     // Timeout qualification
+        timeoutFlgSerial_2 = 1;                         // Timeout detected
+        timeoutCntSerial_2 = SERIAL_TIMEOUT;            // Limit timout counter value
+      }
         return;
     }
 
@@ -234,11 +249,15 @@ void Receive_serial_2()
           #endif
         }
         idx_Serial2 = 0;    // Reset the index (it prevents to enter in this if condition in the next cycle)
+        timeoutFlgSerial_2 = 0;         // Clear timeout flag
+        timeoutCntSerial_2 = 0;         // Reset timeout counter
     }
 
     // Update previous states
     incomingBytePrev_Serial2 = incomingByte_Serial2;
 }
+
+
 
 //------------------------------------------------------------------------
 // procedures send command setup
@@ -254,21 +273,36 @@ void setupSendCmd() {
 // procedures send command loop
 //------------------------------------------------------------------------ 
 void loopSendCmd() {
-  // Send commands 
-  unsigned long timeNow = millis();
-  if (timeNow - iTimeSend >= TIME_SEND) {
-    iTimeSend = timeNow;
-    // Uart1//
-    sendSerial(1, enable, controlMode, -speeds.leftSpeed, speeds.leftSpeed); 
-    //                                         LP                LT    
-    // Uart2 //
-    sendSerial(2, enable, controlMode, speeds.rightSpeed, -speeds.rightSpeed);
-    //                                         PP                PT
+  // Send commands                                                                      ////////////////////////////////
+  unsigned long timeNow = millis();                                                     //  Serial_2   ↑   Serial_1   //
+  if (timeNow - iTimeSend >= TIME_SEND) {                                               //             ↑              //
+    iTimeSend = timeNow;                                                                //        ╔═════════╗         //
+    // Uart1//                                                                          //   LP ╠═╣    ↑    ╠═╣  PP   //
+    sendSerial(1, enable_1, controlMode_Blynk, speeds.leftSpeed, -speeds.leftSpeed);    // SLAVE  ║    ↑    ║   SLAVE //
+    //                                         PP                PT                     //        ║    ↑    ║         //
+    // Uart2 //                                                                         //        ║    ↑    ║         //
+    sendSerial(2, enable_2, controlMode_Blynk, -speeds.rightSpeed, speeds.rightSpeed);  //   LT ╠═╣    ↑    ╠═╣  PT   //
+    //                                         LP                LT                     // MASTER ╚═════════╝  MASTER //
+  //                                                                                    //             ↑              //
+  //                                                                                    ////////////////////////////////
+  // Serial.print(speeds.leftSpeed);
+  // Serial.print(" ");
+  // Serial.println(-speeds.rightSpeed);
+  // Serial.print(" ");
+  // Serial.print(enable_2);
+  // Serial.print(" ");
+  // Serial.println(controlMode_Blynk);
   }
 
+if (timeoutFlgSerial_2 && (loop_counter % 1000 == 0)) {
+      Feedback_Serial2.cmdLed ^= LED3_SET;
+      //Feedback_Serial2.cmdLed &= ~LED1_SET & ~LED2_SET & ~LED4_SET & ~LED5_SET;
+    }
 // Receive commands
 Receive_serial_1();
 Receive_serial_2();
+
+loop_counter++;
 }
 
 //------------------------------------------------------------------------

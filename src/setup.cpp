@@ -65,6 +65,11 @@ WidgetTerminal Terminal(V0);
 BlynkTimer timer;   // Nazwa Timera Blynk.
 WidgetBridge BlynkBridge (blynk_bridge_pin);       // [Most]
 WidgetRTC rtc;
+WidgetLED led1(V10);
+WidgetLED led2(V11);
+WidgetLED led3(V12);
+WidgetLED led4(V13);
+WidgetLED led5(V14);
 #endif
 
 
@@ -92,9 +97,14 @@ extern bool serial2Blynk;
 extern int axisValueX;
 extern int axisValueY;
 
+extern uint8_t test;
+extern uint8_t enable_off;
 
-extern bool enable;
-extern byte controlMode;
+extern uint8_t movement;
+extern uint16_t speed_Blynk;
+extern uint16_t steer_Blynk;
+extern bool enable_Blynk;
+extern byte controlMode_Blynk;
 
 //------------------------------------------------------------------------
 // variables
@@ -125,14 +135,16 @@ uint8_t RealSecond;
 String DayOfWeak;
 uint8_t DayOfWeakNumber;
 
-int OutputLewa;
-int OutputPrawa;
+int16_t OutputLewa;
+int16_t OutputPrawa;
+
+
 //------------------------------------------------------------------------
 // procedures serial setup
 //------------------------------------------------------------------------ 
 void SerialSetup() {
-  Serial.begin(SpeedRate);
-  Serial.println("Setup Serial Begin.");
+  //Serial.begin(SpeedRate);
+  //Serial.println("Setup Serial Begin.");
   delay(100);
   logger.add(Serial, LOG_LEVEL_INFO, true); // This will log everything on Serial
   logger.add(Terminal, LOG_LEVEL_VERBOSE, true); // This will log everything on Serial
@@ -230,9 +242,26 @@ void BlynkTimerSet() {
     //timer.setInterval(20L, VoltageRegulatorCompiute);
     timer.setInterval(1000L, CheckCycleESP);
     timer.setInterval(1000L, WifiSignal);
+    //timer.setInterval(50L, blinkLedWidget);
     timer.setInterval(1000L, WidgetTest);
 }
+uint16_t cmdLedLast;
+bool cmdLedON;
+void blinkLedWidget() {
 
+if (cmdLedON) {
+  if (Feedback_Serial2.cmdLed != cmdLedLast) {
+    if (Feedback_Serial2.cmdLed & LED1_SET)  { led1.on(); } else { led1.off(); }
+    if (Feedback_Serial2.cmdLed & LED2_SET)  { led2.on(); } else { led2.off(); }
+    if (Feedback_Serial2.cmdLed & LED3_SET)  { led3.on(); } else { led3.off(); }
+    if (Feedback_Serial2.cmdLed & LED4_SET)  { led4.on(); } else { led4.off(); }
+    if (Feedback_Serial2.cmdLed & LED5_SET)  { led5.on(); } else { led5.off(); }
+    
+    cmdLedLast = Feedback_Serial2.cmdLed;
+    // inf << "zmiana " << Feedback_Serial2.cmdLed << " " << cmdLedLast << endl;
+  }
+}
+}
 //------------------------------------------------------------------------
 // procedures blynk loop
 //------------------------------------------------------------------------ 
@@ -251,13 +280,13 @@ void WidgetTest(){
 float serial1BateryVoltage = Feedback_Serial1.batVoltage / 100.0;
 
   Blynk.virtualWrite(V61, serial1BateryVoltage);  
-  // Blynk.virtualWrite(V62, Feedback_Serial1.batVoltage);  
+  // Blynk.virtualWrite(V61, Feedback_Serial1.cmdLed);  
   // Blynk.virtualWrite(V63, Feedback_Serial1.boardTempSlave);  
 
-float serial2BateryVoltage = Feedback_Serial2.batVoltage / 100.0;
+// float serial2BateryVoltage = Feedback_Serial2.batVoltage / 100.0;
 
-  Blynk.virtualWrite(V71, serial2BateryVoltage);  
-  // Blynk.virtualWrite(V72, Feedback_Serial2.boardTempMaster);  
+//   Blynk.virtualWrite(V71, serial2BateryVoltage);  
+  // Blynk.virtualWrite(V71, Feedback_Serial2.cmdLed);  
   // Blynk.virtualWrite(V73, Feedback_Serial2.boardTempSlave); 
 
   // Blynk.virtualWrite(V32, OutputLewa);
@@ -282,30 +311,31 @@ void BlynkTerminal(int cmd) {
 // procedures blynk declaration virtual pin
 //------------------------------------------------------------------------ 
 BLYNK_CONNECTED() {
-  rtc.begin();                                                      // Synchronize time on connection.
-  Blynk.syncVirtual(V1, V2, V3, V5, V8);                           // Synchronizowanie Wartości z Aplikacji Blynk.
-
-  //BlynkBridge.setAuthToken(bridge_token);                           // Token do ESP-Rolety_L923D.
+  rtc.begin();                                                            // Synchronize time on connection.
+  Blynk.syncVirtual(V1, V2, V5, V6, V8, V20, V21, V22, V23, V27, V60, V100);                                  // Synchronizowanie Wartości z Aplikacji Blynk.
+  
+  // BlynkBridge.setAuthToken(bridge_token);                                // Token do ESP-Rolety_L923D.
 }
 
 BLYNK_WRITE(V1) { serial1Blynk = param.asInt(); }
 BLYNK_WRITE(V2) { serial2Blynk = param.asInt(); }
 // BLYNK_WRITE(V3) { BLYNK_PID_KI = param.asInt(); }
 // BLYNK_WRITE(V4) { BLYNK_PID_KD = param.asInt(); }
-BLYNK_WRITE(V8) { controlMode = param.asInt(); }      
+BLYNK_WRITE(V8) { controlMode_Blynk = param.asInt(); }  
 BLYNK_WRITE(V30) { axisValueX = param.asInt(); }
 BLYNK_WRITE(V31) { axisValueY = param.asInt(); }
 
-//BLYNK_WRITE(V6) { Out_Warm = param.asInt(); }                           // ON
-// BLYNK_WRITE(V7) { OFF = param.asInt(); }                          // OFF
-// BLYNK_WRITE(V8) { TOGGLE = param.asInt(); }                       // TOGGLE
-//BLYNK_WRITE(V9) { ButtonBlynkColor = param.asInt(); }                       // TOGGLE
-// BLYNK_WRITE(V10) { white_Warm = param.asInt(); }                     // Warm - Wykresy
-// BLYNK_WRITE(V11) { white_Cold = param.asInt(); }                     // Cold - Wykresy
-BLYNK_WRITE(V60) { enable = param.asInt(); } 
-//BLYNK_WRITE(V21) { = param.asInt(); }                             // BlynkBridge Pin.
-//BLYNK_WRITE(V100) { SpeedTest = 0;                                  // Przycisk w Aplikacji Blynk.
-//                 checkSpeedButton = param.asInt(); }
+BLYNK_WRITE(V6) { cmdLedON = param.asInt(); }                           // ON
+BLYNK_WRITE(V20) { movement = param.asInt(); }                          // 
+BLYNK_WRITE(V21) { speed_Blynk = param.asInt(); }                       // 
+BLYNK_WRITE(V22) { enable_off = param.asInt(); }                       // 
+BLYNK_WRITE(V23) { steer_Blynk = param.asInt(); }                       // 
+// BLYNK_WRITE(V24) { movement = param.asInt(); }                       // 
+// BLYNK_WRITE(V25) { movement = param.asInt(); }                       // 
+
+BLYNK_WRITE(V60) { enable_Blynk = param.asInt(); } 
+BLYNK_WRITE(V27) { test = param.asInt(); }                                 // BlynkBridge Pin.
+BLYNK_WRITE(V100) { SpeedTest = 0;  checkSpeedButton = param.asInt(); } // Przycisk w Aplikacji Blynk.
 //BLYNK_WRITE(V101) { = param.asInt(); }                            // Zasięg WiFi Wysyłany do Aplikacji.
 
 //------------------------------------------------------------------------
@@ -651,6 +681,7 @@ void loopPlatform() {
     #if defined(VARIANT_ESP8266) || defined(VARIANT_ESP32_LOLIN)
     //ArduinoOTA.handle();
     #endif
+    blinkLedWidget();
     BlynkTimeOutRestart();
     Terminal.flush();
 }

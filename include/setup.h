@@ -27,7 +27,7 @@ void OtaSetup();
 void RealTimeClock();
 void setupPlatform();
 void loopPlatform();
-
+void blinkLedWidget();
 
 void controlTracks(int difference);
 #endif
