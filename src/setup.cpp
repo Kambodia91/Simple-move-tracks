@@ -7,6 +7,8 @@
 
 #include "moveTracks.h"
 #include "sendCmd.h"
+#include "sbusRx.h"
+#include "starter.h"
 
 #if defined(VARIANT_ESP32_S2)
 #include <BlynkSimpleEsp32.h>                      // [Blynk]
@@ -138,6 +140,7 @@ uint8_t DayOfWeakNumber;
 int16_t OutputLewa;
 int16_t OutputPrawa;
 
+float rpmMower;
 
 //------------------------------------------------------------------------
 // procedures serial setup
@@ -163,7 +166,8 @@ void GpioInit() {
 #endif
 
     // pinMode(SENSOR_PIN, INPUT);
-    // pinMode(OUTPUT_PIN, OUTPUT);
+    pinMode(safetyStopPin, OUTPUT);
+    pinMode(starterPin, OUTPUT);
     pinMode(LED_BUILTIN, OUTPUT);
 }
 
@@ -226,12 +230,20 @@ void BlynkTimeOutRestart() {
 // procedures blynk logo
 //------------------------------------------------------------------------ 
 void BlynkLogo() {
-    inf << "    ___  __          __" << endl;
-    inf << "   / _ )/ /_ _____  / /__" << endl;
-    inf << "  / _  / / // / _ \\/  '_/" << endl;
-    inf << " /____/_/\\_, /_//_/_/\\_\\" << endl;
-    inf << "        /___/ ver. " << BLYNK_VERSION <<  endl;
-    inf << " on " << BLYNK_INFO_DEVICE << " Instaled." << endl;
+    // inf << np <<"    ___  __          __" << endl;
+    // inf << np <<"   / _ )/ /_ _____  / /__" << endl;
+    // inf << np <<"  / _  / / // / _ \\/  '_/" << endl;
+    // inf << np <<" /____/_/\\_, /_//_/_/\\_\\" << endl;
+    // inf << np <<"        /___/ ver. " << BLYNK_VERSION <<  endl;
+    // inf << np <<" on " << BLYNK_INFO_DEVICE << " Instaled." << endl;
+    // inf << np << endl;
+
+
+    inf << np <<"     __                           __  ___                          " << endl;
+    inf << np <<"    / /  ____ __      ______     /  |/  /___ _      _____  _____   " << endl;
+    inf << np <<"   / /  / __ `/ | /| / / __ \\   / /|_/ / __ \\ | /| / / _ \\/ ___/" << endl;
+    inf << np <<"  / /__/ /_/ /| |/ |/ / / / /  / /  / / /_/ / |/ |/ /  __/ /       " << endl;
+    inf << np <<" /_____|__,_/ |__/|__/_/ /_/  /_/  /_/\\____/|__/|__/\\___/_/      " << endl;
     inf << np << endl;
 }
 
@@ -280,7 +292,7 @@ void WidgetTest(){
 float serial1BateryVoltage = Feedback_Serial1.batVoltage / 100.0;
 
   Blynk.virtualWrite(V61, serial1BateryVoltage);  
-  // Blynk.virtualWrite(V61, Feedback_Serial1.cmdLed);  
+  Blynk.virtualWrite(V62, rpmMower);  
   // Blynk.virtualWrite(V63, Feedback_Serial1.boardTempSlave);  
 
 // float serial2BateryVoltage = Feedback_Serial2.batVoltage / 100.0;
@@ -289,8 +301,8 @@ float serial1BateryVoltage = Feedback_Serial1.batVoltage / 100.0;
   // Blynk.virtualWrite(V71, Feedback_Serial2.cmdLed);  
   // Blynk.virtualWrite(V73, Feedback_Serial2.boardTempSlave); 
 
-  // Blynk.virtualWrite(V32, OutputLewa);
-  // Blynk.virtualWrite(V33, OutputPrawa);
+  // Blynk.virtualWrite(V32, speeds.leftSpeed);
+  // Blynk.virtualWrite(V33, speeds.leftSpeed);
 
 }
 
@@ -304,7 +316,9 @@ void BlynkTerminal(String cmd) {
 
 void BlynkTerminal(int cmd) {
     int Cmd = cmd;
+    //Terminal.clear();
     Blynk.virtualWrite(V0, Cmd);
+    
 }
 
 //------------------------------------------------------------------------
@@ -354,6 +368,7 @@ void WifiSignal() {
 //------------------------------------------------------------------------ 
 void CheckCycleESP() {
   if (checkSpeedButton == true) {
+    //BlynkTerminal(SpeedTest);
     inf << np << terminal_name_device << "Cykli na 1s: " << SpeedTest << endl;
     SpeedTest = 0;
   }
@@ -666,9 +681,9 @@ void setupPlatform() {
     BlynkLogo();
     BlynkTimerSet();
     #if defined(VARIANT_ESP8266) || defined(VARIANT_ESP32_LOLIN)
-    //ManagerSetup();
+    // ManagerSetup();
     // FsSetup();
-    //OtaSetup();
+    // OtaSetup();
     #endif
 }
 
@@ -679,7 +694,7 @@ void loopPlatform() {
     BlynkLoop();
     SpeedTest = (SpeedTest+1);
     #if defined(VARIANT_ESP8266) || defined(VARIANT_ESP32_LOLIN)
-    //ArduinoOTA.handle();
+    // ArduinoOTA.handle();
     #endif
     blinkLedWidget();
     BlynkTimeOutRestart();

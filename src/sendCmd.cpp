@@ -6,6 +6,8 @@
 #include "setup.h"
 #include "moveTracks.h"
 #include "sendCmd.h"
+#include "sbusRx.h"
+#include "starter.h"
 
 #include <stdint.h>
 #include <ArduinoLogger.h>                         // [Serial / Terminal]
@@ -50,8 +52,13 @@ bool available_Serial2 = 1;
 bool serial1Blynk;
 bool serial2Blynk;
 
-uint16_t timeoutCntSerial_2 = SERIAL_TIMEOUT;  // Timeout counter for Rx Serial command
-uint8_t  timeoutFlgSerial_2 = 0;               // Timeout Flag for Rx Serial command: 0 = OK, 1 = Problem detected (line disconnected or wrong Rx data)
+uint16_t  timeoutCntSerial_2 = 0;               // Timeout counter for Rx Serial command
+uint8_t   timeoutFlgSerial_2 = 0;               // Timeout Flag for Rx Serial command: 0 = OK, 1 = Problem detected (line disconnected or wrong Rx data)
+bool      timeoutMsgSerial_2 = 0;
+
+uint16_t  timeoutCntSerial_1 = 0;               // Timeout counter for Rx Serial command
+uint8_t   timeoutFlgSerial_1 = 0;               // Timeout Flag for Rx Serial command: 0 = OK, 1 = Problem detected (line disconnected or wrong Rx data)
+bool      timeoutMsgSerial_1 = 0;
 
 
 
@@ -103,15 +110,23 @@ void sendSerial(int8_t serialPort, int16_t uEnableMotors, int16_t uControlMode, 
 
 void Receive_serial_1()
 {
+
+
   // Serial 1//
     // Check for new data availability in the Serial buffer
     if (Serial1.available()) {
         incomingByte_Serial1 	  = Serial1.read();                                   // Read the incoming byte
         bufStartFrame_Serial1	= ((uint16_t)(incomingByte_Serial1) << 8) | incomingBytePrev_Serial1;       // Construct the start frame
+    } else {
+        //return;
     }
-    else {
-        return;
+  
+  if (timeoutFlgSerial_1 == 1 ) {
+    if (!timeoutMsgSerial_1) {
+    inf << "Serial1 no connect." <<  endl;
+    timeoutMsgSerial_1 = 1;
     }
+  }
 
   // If DEBUG_RX is defined print all incoming bytes
   #ifdef DEBUG_SERIAL1_RX
@@ -128,7 +143,7 @@ void Receive_serial_1()
     } else if (idx_Serial1 >= 2 && idx_Serial1 < sizeof(SerialFeedback)) {  // Save the new received data
         *p_Serial1++    = incomingByte_Serial1; 
         idx_Serial1++;
-    }	
+    }
     
     // Check if we reached the end of the package
     if (idx_Serial1 == sizeof(SerialFeedback)) {
@@ -150,6 +165,9 @@ void Receive_serial_1()
         if (NewFeedback_Serial1.start == START_FRAME && checksum == NewFeedback_Serial1.checksum) {
             // Copy the new data
             memcpy(&Feedback_Serial1, &NewFeedback_Serial1, sizeof(SerialFeedback));
+            timeoutCntSerial_1 = 0;
+            timeoutFlgSerial_1 = 0;
+            timeoutMsgSerial_1 = 0;
             #ifdef PRINT_SERIAL_DATA
             // Print data to built-in Serial
             Serial.print("Serial_1: 1: ");   Serial.print(Feedback_Serial1.cmd1);
@@ -170,6 +188,13 @@ void Receive_serial_1()
           #endif
         }
         idx_Serial1 = 0;    // Reset the index (it prevents to enter in this if condition in the next cycle)
+    } else {
+          // if (timeoutCntSerial_1++ >= SERIAL_TIMEOUT) {              // Timeout qualification
+          //       timeoutFlgSerial_1 = 1;                                     // Timeout detected
+          //       timeoutCntSerial_1 = SERIAL_TIMEOUT;                        // Limit timout counter value
+          //   } else {
+          //       // Serial.println(timeoutCntSerial_1);
+          //   }
     }
 
     // Update previous states
@@ -183,18 +208,20 @@ void Receive_serial_2()
     if (Serial2.available()) {
         incomingByte_Serial2 	  = Serial2.read();                                   // Read the incoming byte
         bufStartFrame_Serial2	= ((uint16_t)(incomingByte_Serial2) << 8) | incomingBytePrev_Serial2;       // Construct the start frame
+    } else {
+      //  return;
+    } 
+
+  if (timeoutFlgSerial_2 == 1 ) {
+    if (!timeoutMsgSerial_2) {
+    inf << "Serial2 no connect." <<  endl;
+    timeoutMsgSerial_2 = 1;
     }
-    else {
-      if (timeoutCntSerial_2++ >= SERIAL_TIMEOUT) {     // Timeout qualification
-        timeoutFlgSerial_2 = 1;                         // Timeout detected
-        timeoutCntSerial_2 = SERIAL_TIMEOUT;            // Limit timout counter value
-      }
-        return;
-    }
+  }
 
   // If DEBUG_RX is defined print all incoming bytes
   #ifdef DEBUG_SERIAL2_RX
-        Serial.print(Serial2.read());
+        Serial.println(Serial2.read());
         return;
     #endif
 
@@ -203,12 +230,11 @@ void Receive_serial_2()
         p_Serial2       = (byte *)&NewFeedback_Serial2;
         *p_Serial2++    = incomingBytePrev_Serial2;
         *p_Serial2++    = incomingByte_Serial2;
-        idx_Serial2     = 2;	
+        idx_Serial2     = 2;
     } else if (idx_Serial2 >= 2 && idx_Serial2 < sizeof(SerialFeedback)) {  // Save the new received data
         *p_Serial2++    = incomingByte_Serial2; 
         idx_Serial2++;
-    }	
-    
+    }
     // Check if we reached the end of the package
     if (idx_Serial2 == sizeof(SerialFeedback)) {
         uint16_t checksum;
@@ -229,6 +255,9 @@ void Receive_serial_2()
         if (NewFeedback_Serial2.start == START_FRAME && checksum == NewFeedback_Serial2.checksum) {
             // Copy the new data
             memcpy(&Feedback_Serial2, &NewFeedback_Serial2, sizeof(SerialFeedback));
+            timeoutCntSerial_2 = 0;
+            timeoutFlgSerial_2 = 0;
+            timeoutMsgSerial_2 = 0;
             #ifdef PRINT_SERIAL_DATA
             // Print data to built-in Serial
             Serial.print("Serial_2: 1: ");   Serial.print(Feedback_Serial2.cmd1);
@@ -249,8 +278,13 @@ void Receive_serial_2()
           #endif
         }
         idx_Serial2 = 0;    // Reset the index (it prevents to enter in this if condition in the next cycle)
-        timeoutFlgSerial_2 = 0;         // Clear timeout flag
-        timeoutCntSerial_2 = 0;         // Reset timeout counter
+    } else {
+          // if (timeoutCntSerial_2++ >= SERIAL_TIMEOUT) {              // Timeout qualification
+          //       timeoutFlgSerial_2 = 1;                                     // Timeout detected
+          //       timeoutCntSerial_2 = SERIAL_TIMEOUT;                        // Limit timout counter value
+          // } else {
+          //       // Serial.println(timeoutCntSerial_2);
+          // }
     }
 
     // Update previous states
@@ -285,23 +319,26 @@ void loopSendCmd() {
     //                                         LP                LT                     // MASTER ╚═════════╝  MASTER //
   //                                                                                    //             ↑              //
   //                                                                                    ////////////////////////////////
-  // Serial.print(speeds.leftSpeed);
+ 
+  // inf << np << "Serial 1: " << "enable: " << enable_1 << " mode: " << controlMode_Blynk << " PP: " << speeds.leftSpeed << " PT: " << -speeds.leftSpeed << endl;
+  // inf << np << "Serial 2: " << "enable: " << enable_2 << " mode: " << controlMode_Blynk << " LP: " << speeds.rightSpeed << " LT: " << -speeds.rightSpeed << endl;
+  // Serial.print(-speeds.rightSpeed);
   // Serial.print(" ");
-  // Serial.println(-speeds.rightSpeed);
+  // Serial.println(Serial2.available());
   // Serial.print(" ");
   // Serial.print(enable_2);
   // Serial.print(" ");
   // Serial.println(controlMode_Blynk);
   }
 
-if (timeoutFlgSerial_2 && (loop_counter % 1000 == 0)) {
-      Feedback_Serial2.cmdLed ^= LED3_SET;
-      //Feedback_Serial2.cmdLed &= ~LED1_SET & ~LED2_SET & ~LED4_SET & ~LED5_SET;
-    }
+// if (timeoutFlgSerial_2 && (loop_counter % 1000 == 0)) {
+//       Feedback_Serial2.cmdLed ^= LED3_SET;
+//       //Feedback_Serial2.cmdLed &= ~LED1_SET & ~LED2_SET & ~LED4_SET & ~LED5_SET;
+//     }
 // Receive commands
 Receive_serial_1();
 Receive_serial_2();
-
+  // inf << np << " PP: " << speeds.leftSpeed << " PT: " << -speeds.leftSpeed <<  " LP: " << speeds.rightSpeed << " LT: " << -speeds.rightSpeed << endl;
 loop_counter++;
 }
 

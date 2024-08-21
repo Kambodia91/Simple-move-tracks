@@ -9,6 +9,7 @@
 #include "moveTracks.h"
 #include "sendCmd.h"
 #include "sbusRx.h"
+#include "starter.h"
 
 
 
@@ -19,6 +20,7 @@ void setup () {
   setupSerialSbusRx();
   setupPlatform();  // installation of necessary things
   setupSendCmd();
+  setupStarter();
   
 }
 
@@ -30,11 +32,13 @@ void loop () {
   loopReadSbusRx();
   loopTracks();
   loopSendCmd();
+  loopStarter();
   
 
   //---Blink Led---//
   unsigned long timeNow = millis();
   digitalWrite(LED_BUILTIN, (timeNow%2000)<1000);
+  // digitalWrite(25, (timeNow%2000)<1000);
   //---Blink Led---//
 
 }

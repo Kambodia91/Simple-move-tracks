@@ -37,14 +37,19 @@
 #define ANALOG_IN_RES           12                                  // 12bit.
 #define PWM_FREQ                5000                                // 5000hz.
 #define PWM_RES                 10                                  // 10bit.
-
+                           
+#define HALL_PIN                12                                  // [IN] czujnik hall do pomiaru obrotow silnika spalinowego.
+#define safetyStopPin           25                                  // [OUT] Stycznik rozłącznik iskry.                         [3]
+#define starterPin              33
+#define CHARGING_PIN            14                                  // [OUT] Stycznik Załączenie ładowania w Alternatorze.      [1]
+#define SWITCH_4                32
 //-------------------------Send/Recived-Cmd-------------------------//
 
 #define HOVER_SERIAL_BAUD   115200      // [-] Baud rate for HoverSerial (used to communicate with the hoverboard)
 #define START_FRAME         0xABCD     	// [-] Start frme definition for reliable serial communication
 #define TIME_SEND           50          // [ms] Sending time interval
-#define SERIAL_TIMEOUT      160         // [-] Serial timeout duration for the received data. 160 ~= 0.8 sec. Calculation: 0.8 sec / 0.005 sec
-#define PRINT_SERIAL_DATA
+#define SERIAL_TIMEOUT      100         // [-] Serial timeout duration for the received data. 160 ~= 0.8 sec. Calculation: 0.8 sec / 0.005 sec
+// #define PRINT_SERIAL_DATA
 // #define DEBUG_SERIAL1_RX              // [-] Debug received data. Prints all bytes to serial (comment-out to disable)
 // #define DEBUG_SERIAL2_RX              // [-] Debug received data. Prints all bytes to serial (comment-out to disable)
 
@@ -70,7 +75,11 @@
 #define PID_SET_POINT           2000                                // 
 
 //ADC_MODE(ADC_VCC);                                                  // Pomiar Napięcia ADC.
+//-----------------------------STARTER------------------------------//
 
+#define PID_KP                  10                                  // 
+#define PID_KI                  2                                   // 
+#define PID_KD                  5                                   // 
 //----------------------------End File------------------------------//
 
 #define CLAMP(x, low, high) (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))

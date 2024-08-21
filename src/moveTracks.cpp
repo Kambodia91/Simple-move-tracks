@@ -6,6 +6,8 @@
 #include "setup.h"
 #include "moveTracks.h"
 #include "sendCmd.h"
+#include "sbusRx.h"
+#include "starter.h"
 
 #include <stdint.h>
 #include <ArduinoLogger.h>                         // [Serial / Terminal]
@@ -84,120 +86,8 @@ void moveTracks(int leftStick, int rightStick) {
 // procedures loop tracks
 //------------------------------------------------------------------------ 
 void loopTracks() {
-    //Serial.println(movement);
-    // if (test) {
-
-    //     switch (movement) {
-    //         case 1 :                                                    // Do przodu
-    //         if (enable_off){
-    //             enable_1 = enable_Blynk;                                    // Prawe
-    //             enable_2 = enable_Blynk;                                    // Lewe
-    //         } else {
-    //             enable_1 = enable_Blynk;                                    // Prawe
-    //             enable_2 = enable_Blynk;                                    // Lewe
-    //         }
-
-    //         // speeds.leftSpeed = speed_Blynk;                             // Prawa
-    //         // speeds.rightSpeed = speed_Blynk;                            // Lewa
-    //         //inf << "Jazda do przodu." << endl;
-    //         break;
-        
-    //         case 2 :                                                    // Do przodu i w Prawo
-    //         if (enable_off){
-    //             enable_1 = 0;                                               // Prawe
-    //             enable_2 = enable_Blynk;                                    // Lewe
-    //         } else {
-    //             enable_1 = enable_Blynk;                                    // Prawe
-    //             enable_2 = enable_Blynk;                                    // Lewe
-    //         }
-    //         speeds.leftSpeed = 0;                                       // Prawa
-    //         // speeds.rightSpeed = speed_Blynk;                            // Lewa
-    //         //Serial.println("Jazda do przodu w lewo");
-    //         break;
-
-    //         case 3 :                                                    // Do przodu i w lewo
-    //         if (enable_off){
-    //             enable_1 = enable_Blynk;                                    // Prawe
-    //             enable_2 = 0;                                               // Lewe
-    //         } else {
-    //             enable_1 = enable_Blynk;                                    // Prawe
-    //             enable_2 = enable_Blynk;                                    // Lewe
-    //         }
-    //         // speeds.leftSpeed = speed_Blynk;                             // Prawa
-    //         speeds.rightSpeed = 0;                                      // Lewa
-    //         //Serial.println("Jazda do przodu w prawo.");
-    //         break;
-
-    //         case 4 :                                                    // Do tyłu
-    //         if (enable_off){
-    //             enable_1 = enable_Blynk;                                    // Prawe
-    //             enable_2 = enable_Blynk;                                    // Lewe
-    //         } else {
-    //             enable_1 = enable_Blynk;                                    // Prawe
-    //             enable_2 = enable_Blynk;                                    // Lewe
-    //         }
-    //         // speeds.leftSpeed = -speed_Blynk;                            // Prawa
-    //         // speeds.rightSpeed = -speed_Blynk;                           // Lewa
-    //         //Serial.println("Jazda do tyłu.");
-    //         break;
-
-    //         case 5 :                                                    // Do tyłu i w Lewo
-    //         if (enable_off){
-    //             enable_1 = enable_Blynk;                                    // Prawe
-    //             enable_2 = 0;                                               // Lewe
-    //         } else {
-    //             enable_1 = enable_Blynk;                                    // Prawe
-    //             enable_2 = enable_Blynk;                                    // Lewe
-    //         }
-    //         // speeds.leftSpeed = -speed_Blynk;                            // Prawa
-    //         speeds.rightSpeed = 0;                                      // Lewa
-    //         //Serial.println("Jazda do tyłu w lewo.");
-    //         break;
-
-    //         case 6 :                                                    // Do tyłu i w Prawo
-    //         if (enable_off){
-    //             enable_1 = 0;                                               // Prawe
-    //             enable_2 = enable_Blynk;                                    // Lewe
-    //         } else {
-    //             enable_1 = enable_Blynk;                                    // Prawe
-    //             enable_2 = enable_Blynk;                                    // Lewe
-    //         }
-    //         speeds.leftSpeed = 0;                                       // Prawa
-    //         // speeds.rightSpeed = -speed_Blynk;                           // Lewa
-    //         //Serial.println("Jazda do tyłu w prawo.");
-    //         break;
-            
-    //         case 7 :                                                    // Koła zablokowane
-    //         if (enable_off){
-    //             enable_1 = enable_Blynk;                                    // Prawe
-    //             enable_2 = enable_Blynk;                                    // Lewe
-    //         } else {
-    //             enable_1 = enable_Blynk;                                    // Prawe
-    //             enable_2 = enable_Blynk;                                    // Lewe
-    //         }
-    //         speeds.leftSpeed = 0;                                       // Prawa
-    //         speeds.rightSpeed = 0;                                      // Lewa
-    //         //Serial.println("Jazda do tyłu w prawo.");
-    //         break;
-            
-    //         default:                                                    // Koła odblokowane
-    //         if (enable_off){
-    //             enable_1 = 0;                                               // Prawe
-    //             enable_2 = 0;                                               // Lewe
-    //         } else {
-    //             enable_1 = enable_Blynk;                                    // Prawe
-    //             enable_2 = enable_Blynk;                                    // Lewe
-    //         }
-                
-
-    //         speeds.leftSpeed = 0;                                       // Prawa
-    //         speeds.rightSpeed = 0;                                      // Lewa
-    //         //Serial.println("Stop.");
-    //         break;
-    //     } 
-    // } else {
         moveTracks(leftStickY, leftStickX);
-    //}
+        // moveTracks(axisValueY, axisValueX);
 }
 
 //------------------------------------------------------------------------
