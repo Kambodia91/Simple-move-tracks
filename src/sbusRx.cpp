@@ -27,7 +27,7 @@ extern int16_t leftStickX;    //
 extern int16_t leftStickY;    //
 bool starter;
 bool safetyStop;                                   // Sygnał z pilota RC
-float rpm;                                         // Obroty z czujnika halla [starter.cpp]
+
 // extern int16_t RightStickX;   //
 // extern int16_t RightStickY;   //
 
@@ -169,7 +169,7 @@ void loopReadSbusRx() {
   int buttonH = (data.ch[9] > 1000) ? 1 : 0;
 
   starter = buttonH;// włącznik rozrusznika
-  if ((starter == 0) && (rpm > 200)) {
+  if (starter == 0) {
     digitalWrite(starterPin, LOW);
   } else {
     digitalWrite(starterPin, HIGH);

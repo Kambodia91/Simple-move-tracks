@@ -11,10 +11,10 @@
 #include <ArduinoLogger.h>                         // [Serial / Terminal]
 
 const int numMagnets = 1; // Używana liczba magnesów
-const float rpmThreshold = 1800.0; // obroty po przekroczeniu uruchamia ładowanie
+const float rpmThreshold = 2300.0; // obroty po przekroczeniu uruchamia ładowanie
 extern float rpmMower;
 
-static const int numReadings = 10; // Liczba odczytów do uśredniania
+static const int numReadings = 20; // Liczba odczytów do uśredniania
 float readings[numReadings]; // Tablica do przechowywania odczytów
 int readIndex = 0; // Indeks bieżącego odczytu
 float total = 0; // Suma odczytów
@@ -64,7 +64,7 @@ void Tachometer::update() {
         interrupts();
 
         calculateRPM(interval);
-    } else if (currentMicros - _lastMicros > 3000000) { // Jeśli nie było nowych impulsów przez 1 sekundę
+    } else if (currentMicros - _lastMicros > 1000000) { // Jeśli nie było nowych impulsów przez 1 sekundę
         _rpm = 0.0;
         digitalWrite(_ledPin, LOW); // Upewnij się, że dioda LED jest zgaszona
     }
@@ -83,9 +83,14 @@ float Tachometer::getRPM() const {
 
 void IRAM_ATTR Tachometer::handleInterrupt() {
     unsigned long currentMicros = micros();
-    _instance->_intervalMicros = currentMicros - _instance->_lastMicros;
-    _instance->_lastMicros = currentMicros;
-    _instance->_newData = true;
+    unsigned long debounceTime = 5000; // 5 ms (5000 µs) odszumianie
+
+    // Sprawdzenie, czy od ostatniego przerwania minęło wystarczająco dużo czasu
+    if (currentMicros - _instance->_lastMicros > debounceTime) {
+        _instance->_intervalMicros = currentMicros - _instance->_lastMicros;
+        _instance->_lastMicros = currentMicros;
+        _instance->_newData = true;
+    }
 }
 
 void Tachometer::calculateRPM(unsigned long interval) {

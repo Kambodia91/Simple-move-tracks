@@ -102,6 +102,8 @@ extern int axisValueY;
 extern uint8_t test;
 extern uint8_t enable_off;
 
+//extern uint16_t testBatery;
+
 extern uint8_t movement;
 extern uint16_t speed_Blynk;
 extern uint16_t steer_Blynk;
@@ -326,7 +328,7 @@ void BlynkTerminal(int cmd) {
 //------------------------------------------------------------------------ 
 BLYNK_CONNECTED() {
   rtc.begin();                                                            // Synchronize time on connection.
-  Blynk.syncVirtual(V1, V2, V5, V6, V8, V20, V21, V22, V23, V27, V60, V100);                                  // Synchronizowanie Wartości z Aplikacji Blynk.
+  Blynk.syncVirtual(V1, V2, V5, V6, V8, V20, V21, V22, V23, V24, V27, V60, V100);                                  // Synchronizowanie Wartości z Aplikacji Blynk.
   
   // BlynkBridge.setAuthToken(bridge_token);                                // Token do ESP-Rolety_L923D.
 }
@@ -344,7 +346,7 @@ BLYNK_WRITE(V20) { movement = param.asInt(); }                          //
 BLYNK_WRITE(V21) { speed_Blynk = param.asInt(); }                       // 
 BLYNK_WRITE(V22) { enable_off = param.asInt(); }                       // 
 BLYNK_WRITE(V23) { steer_Blynk = param.asInt(); }                       // 
-// BLYNK_WRITE(V24) { movement = param.asInt(); }                       // 
+//BLYNK_WRITE(V24) { testBatery = param.asInt(); }                       // 
 // BLYNK_WRITE(V25) { movement = param.asInt(); }                       // 
 
 BLYNK_WRITE(V60) { enable_Blynk = param.asInt(); } 
