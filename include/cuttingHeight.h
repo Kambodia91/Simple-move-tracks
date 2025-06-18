@@ -1,7 +1,5 @@
-#ifndef SBUSRX_H
-#define SBUSRX_H
-
-
+#ifndef CUTTINGHEIGHT_H
+#define CUTTINGHEIGHT_H
 //------------------------------------------------------------------------
 // include
 //------------------------------------------------------------------------ 
@@ -11,9 +9,6 @@
 //------------------------------------------------------------------------
 // external variables 
 //------------------------------------------------------------------------
-extern int16_t leftStickX;    //
-extern int16_t leftStickY;    //
-extern int threePositionSwitchC;
 
 //------------------------------------------------------------------------
 // struct
@@ -26,8 +21,8 @@ extern int threePositionSwitchC;
 //------------------------------------------------------------------------
 // procedures
 //------------------------------------------------------------------------ 
-void setupSerialSbusRx();
-void loopReadSbusRx();
+void setupCuttingHeight();
+void loopCuttingHeight();
 
 #endif
 

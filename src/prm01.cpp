@@ -1,4 +1,8 @@
-
+//------------------------------------------------------------------------
+// includes
+//------------------------------------------------------------------------ 
+#include <Arduino.h>
+#include <ArduinoLogger.h>                         // [Serial / Terminal]
 #include "defines.h"
 #include "config.h"
 #include "setup.h"
@@ -7,37 +11,36 @@
 #include "sbusRx.h"
 #include "starter.h"
 #include "prm01.h"
+#include "controlServo.h"
+#include "temperatureDS18B20.h"
+#include "webTerminal.h"
+#include "cuttingHeight.h"
 
 #include <stdint.h>
-#include <ArduinoLogger.h>                         // [Serial / Terminal]
 #include <sbus.h>
 
-union u32_tag  {
-    byte       b[4];
-    int32_t    i32;
-  } latit, longt;
+//------------------------------------------------------------------------
+// variables const
+//------------------------------------------------------------------------ 
 
+//------------------------------------------------------------------------
+// objects
+//------------------------------------------------------------------------ 
 STREAM_DATA streamData;
 
+//------------------------------------------------------------------------
+// variables           
+//------------------------------------------------------------------------ 
 byte set = 1;
 
-void setupPrm01() {
-  delay(1000);
-  Wire.begin(4, 23, 19, 400);
-  Wire.onRequest(onRequest);
-}
+// union u32_tag  {
+//     byte       b[4];
+//     int32_t    i32;
+//   } latit, longt;
 
-void loopPrm01() {
-
-  double log = -23.123456;
-  double lat =  75.123456;
-    
-  longt.i32 = (int32_t)(log * 1000000);
-  latit.i32 = (int32_t)(lat * 1000000);
-
-  streamData.battVoltage = Feedback_Serial1.batVoltage * 10;
-}
-
+//------------------------------------------------------------------------
+// procedures set1
+//------------------------------------------------------------------------ 
 void set1() {
   int  alt = streamData.altitude * 10;
   byte  altHi = highByte(alt )  ;
@@ -79,6 +82,9 @@ Wire.write(buffer, 16);
 set=2;
 }
 
+//------------------------------------------------------------------------
+// procedures set2
+//------------------------------------------------------------------------ 
 void set2() {
   int  rise = streamData.climb * 10;
   byte  riseHi = highByte(rise);
@@ -87,13 +93,29 @@ void set2() {
   byte voltesHi = highByte(streamData.battVoltage);
   byte voltesLo = lowByte(streamData.battVoltage);
   
+  int32_t lat = 1e7*streamData.gps_lat;
+  byte latHHi = byte((lat >> 24) & 0x000000FF);
+  byte latHi  = byte((lat >> 16) & 0x000000FF);
+  byte latLo  = byte((lat >> 8)  & 0x000000FF);
+  byte latLLi = byte((lat >> 0)  & 0x000000FF);
+
+  int32_t lon = 1e7*streamData.gps_lon;
+  byte lonHHi = byte((lon >> 24) & 0x000000FF);
+  byte lonHi  = byte((lon >> 16) & 0x000000FF);
+  byte lonLo  = byte((lon >> 8)  & 0x000000FF);
+  byte lonLLi = byte((lon >> 0)  & 0x000000FF);
+
+
+
   byte buffer[16] = {
     0x89, 0xCD, 
     streamData.gps_sats, 
     riseHi, riseLo, 
     voltesHi, voltesLo,
-    latit.b[3], latit.b[2], latit.b[1], latit.b[0],
-    longt.b[3], longt.b[2], longt.b[1], longt.b[0],
+    latHHi, latHi, latLo , latLLi, 
+    lonHHi, lonHi, lonLo , lonLLi,
+    //latit.b[3], latit.b[2], latit.b[1], latit.b[0],
+    //longt.b[3], longt.b[2], longt.b[1], longt.b[0],
     0x00
   };
 
@@ -101,6 +123,9 @@ Wire.write(buffer, 16);
 set=3;
 }
 
+//------------------------------------------------------------------------
+// procedures set3
+//------------------------------------------------------------------------ 
 void set3(){
   byte buffer[16] = {
     0x89, 0xEF, 
@@ -116,6 +141,9 @@ Wire.write(buffer, 16);
 set=1;
 }
 
+//------------------------------------------------------------------------
+// procedures on Request
+//------------------------------------------------------------------------ 
 void onRequest() {
   switch (set)  {
    case 1:
@@ -136,3 +164,29 @@ void onRequest() {
   }
   
 }
+
+//------------------------------------------------------------------------
+// procedures setup Prm01
+//------------------------------------------------------------------------ 
+void setupPrm01() {
+  Wire.begin(4, 23, 19, 400);
+  Wire.onRequest(onRequest);
+}
+
+//------------------------------------------------------------------------
+// procedures loop Prm01
+//------------------------------------------------------------------------ 
+void loopPrm01() {
+
+  // double log = -23.123456;
+  // double lat =  75.123456;
+    
+  // longt.i32 = (int32_t)(log * 1000000);
+  // latit.i32 = (int32_t)(lat * 1000000);
+
+  streamData.battVoltage = Feedback_Serial1.batVoltage * 10;
+}
+
+//------------------------------------------------------------------------
+// end file
+//------------------------------------------------------------------------ 

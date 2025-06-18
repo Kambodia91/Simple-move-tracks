@@ -1,14 +1,20 @@
 //------------------------------------------------------------------------
 // includes
 //------------------------------------------------------------------------ 
+#include <Arduino.h>
+#include <ArduinoLogger.h>                         // [Serial / Terminal]
 #include "defines.h"
 #include "config.h"
 #include "setup.h"
-
 #include "moveTracks.h"
 #include "sendCmd.h"
 #include "sbusRx.h"
 #include "starter.h"
+#include "prm01.h"
+#include "controlServo.h"
+#include "temperatureDS18B20.h"
+#include "webTerminal.h"
+#include "cuttingHeight.h"
 
 #if defined(VARIANT_ESP32_S2)
 #include <BlynkSimpleEsp32.h>                      // [Blynk]
@@ -139,10 +145,10 @@ uint8_t RealSecond;
 String DayOfWeak;
 uint8_t DayOfWeakNumber;
 
-int16_t OutputLewa;
-int16_t OutputPrawa;
+// uint16_t OutputLewa;
+// uint16_t OutputPrawa;
 
-float rpmMower;
+// float rpmMower;
 
 //------------------------------------------------------------------------
 // procedures serial setup
@@ -153,6 +159,8 @@ void SerialSetup() {
   delay(100);
   logger.add(Serial, LOG_LEVEL_INFO, true); // This will log everything on Serial
   logger.add(Terminal, LOG_LEVEL_VERBOSE, true); // This will log everything on Serial
+  logger.add(webTerminal, LOG_LEVEL_VERBOSE, true); // This will log everything on Serial
+
   logger.disableLevelName(Terminal);
 }
 
@@ -169,7 +177,6 @@ void GpioInit() {
 
     // pinMode(SENSOR_PIN, INPUT);
     pinMode(safetyStopPin, OUTPUT);
-    pinMode(starterPin, OUTPUT);
     pinMode(LED_BUILTIN, OUTPUT);
 }
 
@@ -679,7 +686,7 @@ void RealTimeClock() {                                              // Odczty Cz
 void setupPlatform() {
     SerialSetup();
     GpioInit();
-    BlynkSetup();
+    // BlynkSetup();
     BlynkLogo();
     BlynkTimerSet();
     #if defined(VARIANT_ESP8266) || defined(VARIANT_ESP32_LOLIN)
@@ -693,13 +700,13 @@ void setupPlatform() {
 // procedures loop
 //------------------------------------------------------------------------ 
 void loopPlatform() {
-    BlynkLoop();
+    // BlynkLoop();
     SpeedTest = (SpeedTest+1);
     #if defined(VARIANT_ESP8266) || defined(VARIANT_ESP32_LOLIN)
     // ArduinoOTA.handle();
     #endif
-    blinkLedWidget();
-    BlynkTimeOutRestart();
+    // blinkLedWidget();
+    // BlynkTimeOutRestart();
     Terminal.flush();
 }
 //------------------------------------------------------------------------

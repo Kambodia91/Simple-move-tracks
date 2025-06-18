@@ -11,26 +11,30 @@
 #include "sbusRx.h"
 #include "starter.h"
 #include "prm01.h"
-// #include "DS18B20.h"
+#include "controlServo.h"
+#include "temperatureDS18B20.h"
+#include "webTerminal.h"
+#include "cuttingHeight.h"
 
-// #define ONE_WIRE_BUS              32
+// #include "voltageRegulator.h"
 
-// OneWire oneWire(ONE_WIRE_BUS);
-// DS18B20 sensor(&oneWire);
+extern unsigned long timeNow; // wysylanie do innych plikow
 
-int roznicaCzasu;
-int zapamietanyCzas;
 //------------------------------------------------------------------------
 // main setup
 //------------------------------------------------------------------------ 
 void setup () {
   setupSerialSbusRx();
   setupPlatform();  // installation of necessary things
+  setupWebTerminal();
   setupSendCmd();
   setupStarter();
   setupPrm01();
-  // sensor.begin();
-  // sensor.setResolution(10);
+  setupControlServo();
+  setupTemperatureDs18b20();
+  // setupVoltageRegulator();
+  setupCuttingHeight();
+  
 }
 
 //------------------------------------------------------------------------
@@ -38,28 +42,27 @@ void setup () {
 //------------------------------------------------------------------------ 
 void loop () {
   loopPlatform();   // installation of necessary things
+  loopWebTerminal();
   loopReadSbusRx();
   loopTracks();
   loopSendCmd();
   loopStarter();
   loopPrm01();
+  loopControlServo();
+  loopTemperatureDs18b20();
+  // loopVoltageRegulator();
+  loopCuttingHeight();
 
  
 
   
 
   //---Blink Led---//
-  unsigned long timeNow = millis();
+  timeNow = millis();
   digitalWrite(LED_BUILTIN, (timeNow%2000)<1000);
   // digitalWrite(25, (timeNow%2000)<1000);
   //---Blink Led---//
- roznicaCzasu = timeNow - zapamietanyCzas;
-   
-  //     if (roznicaCzasu >= 1000UL) {
-  //         sensor.requestTemperatures();
-  // Serial.print("Temp: ");
-  // Serial.println(sensor.getTempC());
-  // zapamietanyCzas = timeNow;}
+ 
 
 }
 

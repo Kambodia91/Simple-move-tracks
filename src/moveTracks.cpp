@@ -1,6 +1,8 @@
 //------------------------------------------------------------------------
 // includes
 //------------------------------------------------------------------------ 
+#include <Arduino.h>
+#include <ArduinoLogger.h>                         // [Serial / Terminal]
 #include "defines.h"
 #include "config.h"
 #include "setup.h"
@@ -8,41 +10,43 @@
 #include "sendCmd.h"
 #include "sbusRx.h"
 #include "starter.h"
+#include "prm01.h"
+#include "controlServo.h"
+#include "temperatureDS18B20.h"
+#include "webTerminal.h"
+#include "cuttingHeight.h"
 
 #include <stdint.h>
-#include <ArduinoLogger.h>                         // [Serial / Terminal]
 
-static int16_t INPUT_MAX = 1000;             // [-] Input target maximum limitation
-static int16_t INPUT_MIN = -1000;             // [-] Input target minimum limitation
+//------------------------------------------------------------------------
+// variables const
+//------------------------------------------------------------------------ 
 
 //------------------------------------------------------------------------
 // objects
 //------------------------------------------------------------------------ 
-extern TrackSpeeds speeds;
+TrackSpeeds speeds;
 
 //------------------------------------------------------------------------
-// extern variables     // Wysyłane do innych plików
+// variables           
 //------------------------------------------------------------------------ 
-extern uint16_t OutputLewa;     
-extern uint16_t OutputPrawa;
+static int16_t INPUT_MAX = 1000;                                          // [-] Input target maximum limitation.
+static int16_t INPUT_MIN = -1000;                                         // [-] Input target minimum limitation.
 
-extern bool enable_1;
-extern bool enable_2;
-//------------------------------------------------------------------------
-// variables            // Odbierane od innych plikow
-//------------------------------------------------------------------------ 
+uint16_t OutputLewa;     
+uint16_t OutputPrawa;
 
-int16_t leftStickX;    //
-int16_t leftStickY;    //
+bool enable_1 = 0;
+bool enable_2 = 0;
 
 uint32_t axisValueY;
 uint32_t axisValueX;
 //uint16_t speed_Blynk;
-bool enable_Blynk;
+bool enable_Blynk;                                                       // [-] Variable from Blynk app.
 
-uint8_t test;
-uint8_t enable_off;
-uint8_t movement;
+uint8_t test;                                                            // [-] Variable from Blynk app.
+uint8_t enable_off;                                                      // [-] Variable from Blynk app.
+uint8_t movement;                                                        // [-] Variable from Blynk app.
 
 //------------------------------------------------------------------------
 // procedures move tracks
@@ -75,8 +79,8 @@ void moveTracks(int leftStick, int rightStick) {
         rightSpeed = -1000;
     }
     
-    enable_1 = enable_Blynk;      // Prawe
-    enable_2 = enable_Blynk;      // Lewe
+    enable_1 = 1; // enable_Blynk;      // Prawe
+    enable_2 = 1; // enable_Blynk;      // Lewe
     
     speeds.leftSpeed = leftSpeed;
     speeds.rightSpeed = rightSpeed;
@@ -86,8 +90,7 @@ void moveTracks(int leftStick, int rightStick) {
 // procedures loop tracks
 //------------------------------------------------------------------------ 
 void loopTracks() {
-        moveTracks(leftStickY, leftStickX);
-        // moveTracks(axisValueY, axisValueX);
+        moveTracks(leftStickY, leftStickX);                               // [-] RC remote control.
 }
 
 //------------------------------------------------------------------------

@@ -1,4 +1,8 @@
-
+//------------------------------------------------------------------------
+// includes
+//------------------------------------------------------------------------ 
+#include <Arduino.h>
+#include <ArduinoLogger.h>                         // [Serial / Terminal]
 #include "defines.h"
 #include "config.h"
 #include "setup.h"
@@ -6,13 +10,30 @@
 #include "sendCmd.h"
 #include "sbusRx.h"
 #include "starter.h"
+#include "prm01.h"
+#include "controlServo.h"
+#include "temperatureDS18B20.h"
+#include "webTerminal.h"
+#include "cuttingHeight.h"
 
 #include <stdint.h>
-#include <ArduinoLogger.h>                         // [Serial / Terminal]
-
+//------------------------------------------------------------------------
+// variables const
+//------------------------------------------------------------------------ 
 const int numMagnets = 1; // Używana liczba magnesów
 const float rpmThreshold = 2300.0; // obroty po przekroczeniu uruchamia ładowanie
-extern float rpmMower;
+
+//------------------------------------------------------------------------
+// objects
+//------------------------------------------------------------------------ 
+Tachometer tachometer(HALL_PIN, CHARGING_PIN, rpmThreshold, numMagnets);
+Tachometer* Tachometer::_instance = nullptr;
+
+//------------------------------------------------------------------------
+// variables           
+//------------------------------------------------------------------------ 
+
+float rpmMower;
 
 static const int numReadings = 20; // Liczba odczytów do uśredniania
 float readings[numReadings]; // Tablica do przechowywania odczytów
@@ -20,23 +41,9 @@ int readIndex = 0; // Indeks bieżącego odczytu
 float total = 0; // Suma odczytów
 float average = 0; // Uśredniona wartość RPM
 
-
-
-Tachometer tachometer(HALL_PIN, CHARGING_PIN, rpmThreshold, numMagnets);
-
-void setupStarter(){
-  tachometer.begin();
-  pinMode(safetyStopPin, OUTPUT);
-}
-
-void loopStarter(){
-    tachometer.update();                            // RPM Reader.
-    rpmMower = tachometer.getRPM();
-    //Serial.println(rpm);
-}
-
-Tachometer* Tachometer::_instance = nullptr;
-
+//------------------------------------------------------------------------
+// method Tachometer
+//------------------------------------------------------------------------ 
 Tachometer::Tachometer(int hallPin, int ledPin, float rpmThreshold, int numMagnets)
     : _hallPin(hallPin), _ledPin(ledPin), _rpmThreshold(rpmThreshold),
       _lastMicros(0), _intervalMicros(0), _newData(false), _rpm(0.0), _numMagnets(numMagnets) {
@@ -48,13 +55,18 @@ Tachometer::Tachometer(int hallPin, int ledPin, float rpmThreshold, int numMagne
     }
 }
 
-
+//------------------------------------------------------------------------
+// method begin
+//------------------------------------------------------------------------ 
 void Tachometer::begin() {
     pinMode(_hallPin, INPUT_PULLUP);
     pinMode(_ledPin, OUTPUT);
     attachInterrupt(digitalPinToInterrupt(_hallPin), handleInterrupt, FALLING);
 }
 
+//------------------------------------------------------------------------
+// method update
+//------------------------------------------------------------------------ 
 void Tachometer::update() {
     unsigned long currentMicros = micros();
     if (_newData) {
@@ -76,11 +88,16 @@ void Tachometer::update() {
         }
 }
 
-
+//------------------------------------------------------------------------
+// method getRPM
+//------------------------------------------------------------------------ 
 float Tachometer::getRPM() const {
     return _rpm;
 }
 
+//------------------------------------------------------------------------
+// method handleInterrupt
+//------------------------------------------------------------------------ 
 void IRAM_ATTR Tachometer::handleInterrupt() {
     unsigned long currentMicros = micros();
     unsigned long debounceTime = 5000; // 5 ms (5000 µs) odszumianie
@@ -93,6 +110,9 @@ void IRAM_ATTR Tachometer::handleInterrupt() {
     }
 }
 
+//------------------------------------------------------------------------
+// method calculateRPM
+//------------------------------------------------------------------------ 
 void Tachometer::calculateRPM(unsigned long interval) {
     if (interval > 0) {
         float frequency = 1000000.0 / interval; // Hz (częstotliwość impulsów)
@@ -115,3 +135,23 @@ void Tachometer::calculateRPM(unsigned long interval) {
         _rpm = average;
     }
 }
+
+//------------------------------------------------------------------------
+// procedures setup Starter
+//------------------------------------------------------------------------ 
+void setupStarter(){
+    tachometer.begin();
+    pinMode(safetyStopPin, OUTPUT);
+  }
+
+//------------------------------------------------------------------------
+// procedures loop Starter
+//------------------------------------------------------------------------ 
+void loopStarter(){
+    tachometer.update();                                                 // RPM Reader.
+    rpmMower = tachometer.getRPM();
+  }
+
+//------------------------------------------------------------------------
+// end file
+//------------------------------------------------------------------------ 

@@ -1,6 +1,8 @@
 //------------------------------------------------------------------------
 // includes
 //------------------------------------------------------------------------ 
+#include <Arduino.h>
+#include <ArduinoLogger.h>                         // [Serial / Terminal]
 #include "defines.h"
 #include "config.h"
 #include "setup.h"
@@ -8,14 +10,22 @@
 #include "sendCmd.h"
 #include "sbusRx.h"
 #include "starter.h"
+#include "prm01.h"
+#include "controlServo.h"
+#include "temperatureDS18B20.h"
+#include "webTerminal.h"
+#include "cuttingHeight.h"
 
 #include <stdint.h>
-#include <ArduinoLogger.h>                         // [Serial / Terminal]
+
+//------------------------------------------------------------------------
+// variables const
+//------------------------------------------------------------------------ 
 
 //------------------------------------------------------------------------
 // objects
 //------------------------------------------------------------------------
-TrackSpeeds speeds;                                                       // Speed from moveTrack.cpp
+//TrackSpeeds speeds;                                                       // Speed from moveTrack.cpp
 SerialCommand Command;
 SerialFeedback Feedback_Serial1,
                NewFeedback_Serial1,
@@ -32,8 +42,8 @@ unsigned long iTimeSend = 0;
 byte controlMode_Blynk = 0;                     // from blynk | 0 = OPEN_Mode | 1 = FOC_Voltege | 2 = FOC_Speed | 3 = FOC_Torque | 4 = SIN_CTRL | 5 = COMM_CTRL |
 // uint8_t test;
 // uint8_t movement;
-bool enable_1 = 0;                         // from moweTrack
-bool enable_2 = 0;                         // from moweTrack
+// bool enable_1 = 0;                         // from moweTrack
+// bool enable_2 = 0;                         // from moweTrack
 
 uint8_t idx_Serial1 = 0;                        // Index for new data pointer
 uint16_t bufStartFrame_Serial1;                 // Buffer Start Frame
@@ -312,16 +322,16 @@ void loopSendCmd() {
   if (timeNow - iTimeSend >= TIME_SEND) {                                               //             ↑              //
     iTimeSend = timeNow;                                                                //        ╔═════════╗         //
     // Uart1//                                                                          //   LP ╠═╣    ↑    ╠═╣  PP   //
-    sendSerial(1, enable_1, controlMode_Blynk, speeds.leftSpeed, -speeds.leftSpeed);    // SLAVE  ║    ↑    ║   SLAVE //
+    sendSerial(1, 1, /*enable_1,*/ 2, /*controlMode_Blynk,*/ speeds.leftSpeed, -speeds.leftSpeed);    // SLAVE  ║    ↑    ║   SLAVE //
     //                                         PP                PT                     //        ║    ↑    ║         //
     // Uart2 //                                                                         //        ║    ↑    ║         //
-    sendSerial(2, enable_2, controlMode_Blynk, -speeds.rightSpeed, speeds.rightSpeed);  //   LT ╠═╣    ↑    ╠═╣  PT   //
+    sendSerial(2, 1, /*enable_2,*/ 2, /*controlMode_Blynk,*/ -speeds.rightSpeed, speeds.rightSpeed);  //   LT ╠═╣    ↑    ╠═╣  PT   //
     //                                         LP                LT                     // MASTER ╚═════════╝  MASTER //
   //                                                                                    //             ↑              //
   //                                                                                    ////////////////////////////////
  
-  // inf << np << "Serial 1: " << "enable: " << enable_1 << " mode: " << controlMode_Blynk << " PP: " << speeds.leftSpeed << " PT: " << -speeds.leftSpeed << endl;
-  // inf << np << "Serial 2: " << "enable: " << enable_2 << " mode: " << controlMode_Blynk << " LP: " << speeds.rightSpeed << " LT: " << -speeds.rightSpeed << endl;
+  // np << "Serinf << np << "Serial 1: " << "enable: " << enable_1 << " mode: " << controlMode_Blynk << " PP: " << speeds.leftSpeed << " PT: " << -speeds.leftSpeed << endl;
+  // inf << ial 2: " << "enable: " << enable_2 << " mode: " << controlMode_Blynk << " LP: " << speeds.rightSpeed << " LT: " << -speeds.rightSpeed << endl;
   // Serial.print(-speeds.rightSpeed);
   // Serial.print(" ");
   // Serial.println(Serial2.available());

@@ -1,19 +1,14 @@
-#ifndef SBUSRX_H
-#define SBUSRX_H
-
+#ifndef WEBTERMINAL_H
+#define WEBTERMINAL_H
 
 //------------------------------------------------------------------------
 // include
 //------------------------------------------------------------------------ 
 #include <stdint.h>
 #include <Arduino.h>
-
 //------------------------------------------------------------------------
 // external variables 
 //------------------------------------------------------------------------
-extern int16_t leftStickX;    //
-extern int16_t leftStickY;    //
-extern int threePositionSwitchC;
 
 //------------------------------------------------------------------------
 // struct
@@ -22,12 +17,21 @@ extern int threePositionSwitchC;
 //------------------------------------------------------------------------
 // external objects
 //------------------------------------------------------------------------ 
+extern class WebTerminal webTerminal;  // <-- zewnętrzna deklaracja
+
+class WebTerminal : public Print {
+public:
+  size_t write(uint8_t c) override;
+  void flush();
+private:
+  String buffer;
+};
 
 //------------------------------------------------------------------------
 // procedures
 //------------------------------------------------------------------------ 
-void setupSerialSbusRx();
-void loopReadSbusRx();
+void setupWebTerminal();
+void loopWebTerminal();
 
 #endif
 

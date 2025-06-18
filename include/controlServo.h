@@ -1,7 +1,5 @@
-#ifndef SBUSRX_H
-#define SBUSRX_H
-
-
+#ifndef CONTROLSERVO_H
+#define CONTROLSERVO_H
 //------------------------------------------------------------------------
 // include
 //------------------------------------------------------------------------ 
@@ -11,10 +9,8 @@
 //------------------------------------------------------------------------
 // external variables 
 //------------------------------------------------------------------------
-extern int16_t leftStickX;    //
-extern int16_t leftStickY;    //
-extern int threePositionSwitchC;
-
+extern bool lowSpeedEngine;
+extern int angle;
 //------------------------------------------------------------------------
 // struct
 //------------------------------------------------------------------------ 
@@ -26,8 +22,10 @@ extern int threePositionSwitchC;
 //------------------------------------------------------------------------
 // procedures
 //------------------------------------------------------------------------ 
-void setupSerialSbusRx();
-void loopReadSbusRx();
+void chokeLeverControl();
+uint32_t angleToDuty(int angle);
+void setupControlServo();
+void loopControlServo();
 
 #endif
 

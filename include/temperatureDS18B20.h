@@ -1,19 +1,15 @@
-#ifndef SBUSRX_H
-#define SBUSRX_H
-
+#ifndef TEMPERATUREDS18B20_H
+#define TEMPERATUREDS18B20_H
 
 //------------------------------------------------------------------------
 // include
 //------------------------------------------------------------------------ 
 #include <stdint.h>
 #include <Arduino.h>
-
 //------------------------------------------------------------------------
 // external variables 
 //------------------------------------------------------------------------
-extern int16_t leftStickX;    //
-extern int16_t leftStickY;    //
-extern int threePositionSwitchC;
+extern float oilTemperature; 
 
 //------------------------------------------------------------------------
 // struct
@@ -26,8 +22,8 @@ extern int threePositionSwitchC;
 //------------------------------------------------------------------------
 // procedures
 //------------------------------------------------------------------------ 
-void setupSerialSbusRx();
-void loopReadSbusRx();
+void setupTemperatureDs18b20();
+void loopTemperatureDs18b20();
 
 #endif
 
