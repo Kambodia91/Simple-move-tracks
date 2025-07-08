@@ -57,7 +57,7 @@ case 1:
     digitalWrite(SWITCH_3, LOW);
     digitalWrite(SWITCH_4, LOW);
     break;
-case 3:
+case 2:
     digitalWrite(SWITCH_3, LOW);
     digitalWrite(SWITCH_4, HIGH);
     break;
