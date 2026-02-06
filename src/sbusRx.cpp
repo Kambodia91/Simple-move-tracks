@@ -187,10 +187,10 @@ void loopReadSbusRx() {
   threePositionSwitchC = (data.ch[4] < 500) ? 0 : (data.ch[4] < 1500) ? 1 : 2;
 
 //---------------------------------------------------------Kanał 5
-  potentiometerValueA = scaleValue(data.ch[5], 306, 1694, 0, 200);  // Steer
+  potentiometerValueA = scaleValue(data.ch[5], 306, 1694, 0, 800);  // Steer
 
 //---------------------------------------------------------Kanał 6
-  potentiometerValueC = scaleValue(data.ch[6], 306, 1694, 0, 200);  // Speed
+  potentiometerValueC = scaleValue(data.ch[6], 306, 1694, 0, 800);  // Speed
 
 //---------------------------------------------------------Kanał 7
   int potentiometerValueB = scaleValue(data.ch[7], 306, 1694, 0, 1023);

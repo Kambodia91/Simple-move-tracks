@@ -3,30 +3,12 @@
 
 #include <Arduino.h>
 
-//-------------------------BLYNK DEFINES----------------------------//
-#define blynk_token             "o6uW3mPLvn_kHlFuyCeDox48s4sCUvxI"  // Token do ESP.
-//#define BRIDGE_TOKEN                                                // Włączenie Mostu między Blynkiem.
-#define bridge_token            "ieDu65nyAK1b2zeVFdpWcV18I7QeIBqy"  // Token od ESP.
-#define blynk_bridge_pin        201                                 // Virtual Pin Bridge Blynk.
-#define blynk_server            "home-server.tailf80b3b.ts.net"     //"kambodia.ddns.net"                 // Zewnętrzny Adres Servera Blynk.
-//#define blynk_server            "192.168.1.10"                      // Lokalny Adres Servera Blynk.
-#define blynk_port              "8080"                              // Port Servera Blynk
-#define blynk_time_out          10                                  // Czas gdzy urzadzenie nie ma połączenia z serwerem Blynk nastepuje restat. (Czas w sekundach)
-//----------------------HTTP UPDATE DEFINES-------------------------//
-#define Http_ota_server         "kambodia.ddns.net"                 // Adres Http Servera OTA z Plikami *.bin
-#define Http_ota_port           "80"                                // Port Http Servera OTA
-//--------------------------WIFI DEFINES----------------------------//
 
 #define MySsid                  "NETIA"                             // Nazwa Sieci
 #define MyPass                  "Nikuda2518"                        // Hasło Sieci
 #define terminal_name_device    "[ESP32] "                          // Nazwa Wyświetlana w Terminalu.
 #define Name_ESP                "RcLawnMower"                       // Nazwa Hosta w Routerze.
 
-//-----------------------WIFIMANAGER DEFINES------------------------//
-#define BRIDGE_TOKEN                                                // Dodanie Do WifiManagera Mozliwość Wpisania Bridge Token.
-#define static_ip               "192.168.1.50"                      // Ip Urządzenia
-#define static_gw               "192.168.1.1"                       // Ip Routera
-#define static_sn               "255.255.255.0"                     // Maska Podsieci
 
 //---------------------------Esp Setings----------------------------//
 #define SpeedRate               115200                              // Prędkość Serial.
