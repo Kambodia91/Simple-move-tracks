@@ -324,10 +324,10 @@ void loopSendCmd() {
     // Uart1//                                                                          //   LP ╠═╣    ↑    ╠═╣  PP   //
 
 
-    sendSerial(1, 1, /*enable_1,*/ 2, /*controlMode_Blynk,*/ -speeds.leftSpeed, speeds.leftSpeed);    // SLAVE  ║    ↑    ║   SLAVE //
+    sendSerial(1, 1, /*enable_1,*/ 2, /*controlMode_Blynk,*/ speeds.leftSpeed, -speeds.leftSpeed);    // SLAVE  ║    ↑    ║   SLAVE //
     //                                         PP                PT                     //        ║    ↑    ║         //
     // Uart2 //                                                                         //        ║    ↑    ║         //
-    sendSerial(2, 1, /*enable_2,*/ 2, /*controlMode_Blynk,*/ speeds.rightSpeed, -speeds.rightSpeed);  //   LT ╠═╣    ↑    ╠═╣  PT   //
+    sendSerial(2, 1, /*enable_2,*/ 2, /*controlMode_Blynk,*/ -speeds.rightSpeed, speeds.rightSpeed);  //   LT ╠═╣    ↑    ╠═╣  PT   //
     //                                         LP                LT                     // MASTER ╚═════════╝  MASTER //
   //                                                                                    //             ↑              //
   //                                                                                    ////////////////////////////////

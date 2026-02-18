@@ -58,7 +58,7 @@ void moveTracks(int leftStick, int rightStick) {
     int leftSpeed;
     int rightSpeed;
 
-    if (speed >= 0) {
+    if (speed > 0) {
     leftSpeed = speed + rotation;
     rightSpeed = speed - rotation;
     } else {
