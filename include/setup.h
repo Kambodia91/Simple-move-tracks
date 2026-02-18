@@ -6,11 +6,10 @@
 
 void SerialSetup();
 void GpioInit();
-void BlynkLogo();
+void MowerLogo();
 void WifiSignal();
 void CheckCycleESP();
 void setupPlatform();
 void loopPlatform();
 
-void controlTracks(int difference);
 #endif

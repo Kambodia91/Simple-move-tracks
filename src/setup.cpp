@@ -60,19 +60,6 @@
 //------------------------------------------------------------------------
 // objects
 //------------------------------------------------------------------------ 
-#if defined(VARIANT_ESP32_S2) || defined(VARIANT_ESP32_LOLIN) || defined(VARIANT_ESP8266)
-/*
-WidgetTerminal Terminal(V0);
-BlynkTimer timer;   // Nazwa Timera Blynk.
-//WidgetBridge BlynkBridge (blynk_bridge_pin);       // [Most]
-WidgetRTC rtc;
-WidgetLED led1(V10);
-WidgetLED led2(V11);
-WidgetLED led3(V12);
-WidgetLED led4(V13);
-WidgetLED led5(V14);*/
-#endif
-
 
 #if defined(VARIANT_ESP32_LOLIN) || defined(VARIANT_ESP8266)
 WiFiClient espClient;
@@ -185,21 +172,15 @@ void GpioInit() {
 //------------------------------------------------------------------------
 // procedures blynk logo
 //------------------------------------------------------------------------ 
-void BlynkLogo() {
-    // inf << np <<"    ___  __          __" << endl;
-    // inf << np <<"   / _ )/ /_ _____  / /__" << endl;
-    // inf << np <<"  / _  / / // / _ \\/  '_/" << endl;
-    // inf << np <<" /____/_/\\_, /_//_/_/\\_\\" << endl;
-    // inf << np <<"        /___/ ver. " << BLYNK_VERSION <<  endl;
-    // inf << np <<" on " << BLYNK_INFO_DEVICE << " Instaled." << endl;
-    // inf << np << endl;
+void MowerLogo() {
 
-
+    inf << np << endl;
     inf << np <<"     __                           __  ___                          " << endl;
     inf << np <<"    / /  ____ __      ______     /  |/  /___ _      _____  _____   " << endl;
     inf << np <<"   / /  / __ `/ | /| / / __ \\   / /|_/ / __ \\ | /| / / _ \\/ ___/" << endl;
     inf << np <<"  / /__/ /_/ /| |/ |/ / / / /  / /  / / /_/ / |/ |/ /  __/ /       " << endl;
-    inf << np <<" /_____|__,_/ |__/|__/_/ /_/  /_/  /_/\\____/|__/|__/\\___/_/      " << endl;
+    inf << np <<" /_____|__,_/ |__/|__/_/ /_/  /_/  /_/\\____/|__/|__/\\___/_/ " << "Ver: 0.6" << endl;
+
     inf << np << endl;
 }
 
@@ -228,7 +209,6 @@ void BlynkLogo() {
 void WifiSignal() {
   Signal = (100 - abs(WiFi.RSSI()));
   if (Signal != LastSignal) {
-    // Blynk.virtualWrite(V101, Signal);
     LastSignal = Signal;
   } 
 }
@@ -238,7 +218,6 @@ void WifiSignal() {
 //------------------------------------------------------------------------ 
 void CheckCycleESP() {
   if (checkSpeedButton == true) {
-    //BlynkTerminal(SpeedTest);
     inf << np << terminal_name_device << "Cykli na 1s: " << SpeedTest << endl;
     SpeedTest = 0;
   }
@@ -252,34 +231,7 @@ void CheckCycleESP() {
 //------------------------------------------------------------------------
 // procedures flash check only esp8266
 //------------------------------------------------------------------------ 
-#if defined(VARIANT_ESP8266)
-void flashCheck() {
-  uint32_t realSize = ESP.getFlashChipRealSize();
-  uint32_t ideSize = ESP.getFlashChipSize();
-  FlashMode_t ideMode = ESP.getFlashChipMode();
 
-  inf << "[FLASH] Cheking.." << endl;
-  inf << np << "real_id = " << ESP.getFlashChipId() << endl;
-  inf << np << "real_size = " << realSize << " bytes" << endl;
-
-  inf << np << "ide_size = " << ideSize << " bytes" << endl;
-  inf << np << "ide_speed = " << ESP.getFlashChipSpeed() << " Hz" << endl;
-  inf << np << "ide_mode = " <<
-                (ideMode == FM_QIO
-                     ? "QIO"
-                     : ideMode == FM_QOUT
-                           ? "QOUT"
-                           : ideMode == FM_DIO
-                                 ? "DIO"
-                                 : ideMode == FM_DOUT ? "DOUT" : "UNKNOWN") << endl;
-
-  if (ideSize != realSize) {
-    err << "[FLASH] Chip configuration wrong!" << endl;
-  } else {
-    inf << "[FLASH] Chip configuration ok." << endl;
-  }
-}
-#endif
 
 //------------------------------------------------------------------------
 // procedures flash format
@@ -322,12 +274,10 @@ void flashCheck() {
 void setupPlatform() {
     SerialSetup();
     GpioInit();
-    // BlynkSetup();
-    BlynkLogo();
+    
+    MowerLogo();
     #if defined(VARIANT_ESP8266) || defined(VARIANT_ESP32_LOLIN)
-    // ManagerSetup();
-    // FsSetup();
-    // OtaSetup();
+
     #endif
 }
 
@@ -335,14 +285,11 @@ void setupPlatform() {
 // procedures loop
 //------------------------------------------------------------------------ 
 void loopPlatform() {
-    // BlynkLoop();
     SpeedTest = (SpeedTest+1);
+
     #if defined(VARIANT_ESP8266) || defined(VARIANT_ESP32_LOLIN)
-    // ArduinoOTA.handle();
+
     #endif
-    // blinkLedWidget();
-    // BlynkTimeOutRestart();
-    //Terminal.flush();
 }
 //------------------------------------------------------------------------
 // end file

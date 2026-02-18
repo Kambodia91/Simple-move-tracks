@@ -65,9 +65,9 @@ const char* htmlPage = R"rawliteral(
   
       <div id="dataPanel">
         <p><b>Obroty silnika:</b> <span id="rpm">0</span> RPM</p>
-        <p><b>Temperatura silnika:</b> <span id="temp">0.0</span> °C</p>
-        <p><b>Napięcie baterii:</b> <span id="voltage">0.00</span> V</p>
-        <p><b>Kąt skrętu:</b> <span id="angle">0.0</span> °</p>
+        <p><b>Temperatura silnika:</b> <span id="temp">0.0</span>°C</p>
+        <p><b>Napiecie baterii:</b> <span id="voltage">0.00</span>V</p>
+        <p><b>Kat skretu:</b> <span id="angle">0.0</span>°</p>
       </div>
   
       <div id="terminal"></div>
