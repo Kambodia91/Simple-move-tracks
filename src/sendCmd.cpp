@@ -70,13 +70,13 @@ uint16_t  timeoutCntSerial_1 = 0;               // Timeout counter for Rx Serial
 uint8_t   timeoutFlgSerial_1 = 0;               // Timeout Flag for Rx Serial command: 0 = OK, 1 = Problem detected (line disconnected or wrong Rx data)
 bool      timeoutMsgSerial_1 = 0;
 
-
-
+bool      dirLeft = 0;
+bool      dirRight = 1;
 
 //------------------------------------------------------------------------
 // sending procedure
 //------------------------------------------------------------------------ 
-void sendSerial(int8_t serialPort, int16_t uEnableMotors, int16_t uControlMode, int16_t uSpeedMaster, int16_t uSpeedSlave) {
+void sendSerial(int8_t serialPort, int16_t uEnableMotors, int16_t uControlMode, int16_t uDirLeft, int16_t uSpeedLeft, int16_t uDirRight, int16_t uSpeedRight) {
   
   HardwareSerial* serial;
     
@@ -99,16 +99,20 @@ void sendSerial(int8_t serialPort, int16_t uEnableMotors, int16_t uControlMode, 
   // Create command
   Command.start           = (uint16_t)START_FRAME;    // Start Frame  
   Command.enableMotors    = (int16_t)uEnableMotors;   // Enable Motors
-  Command.controlMode     = (int16_t)uControlMode;   // Enable Motors
-  Command.speedMaster     = (int16_t)uSpeedMaster;    // Speed Master Board
-  Command.speedSlave      = (int16_t)uSpeedSlave;     // Speed Slave Board
+  Command.controlMode     = (int16_t)uControlMode;    // Enable Motors
+  Command.dirLeft         = (int16_t)uDirLeft;        // Direction Left
+  Command.speedLeft       = (int16_t)uSpeedLeft;      // Speed Left
+  Command.dirRight        = (int16_t)uDirRight;       // Direction Right
+  Command.speedRight      = (int16_t)uSpeedRight;     // Speed Right
   Command.checksum        = (uint16_t)( Command.start ^ 
                                         Command.enableMotors ^ 
                                         Command.controlMode ^ 
-                                        Command.speedMaster ^ 
-                                        Command.speedSlave);
+                                        Command.dirLeft ^
+                                        Command.speedLeft ^ 
+                                        Command.dirRight ^
+                                        Command.speedRight);
   #ifdef PRINT_SERIAL_DATA
-  //inf << Command.start << " , " << Command.enableMotors << " , " << Command.controlMode  << " , " << Command.speedMaster << " , " << Command.speedSlave << " , " << Command.checksum << " , " << serialPort << endl;
+  //inf << Command.start << " , " << Command.enableMotors << " , " << Command.controlMode  << " , " << Command.speedLeft << " , " << Command.speedRight << " , " << Command.checksum << " , " << serialPort << endl;
   #endif
   // Write to Serial
   serial->write((uint8_t *) &Command, sizeof(Command)); 
@@ -321,26 +325,15 @@ void loopSendCmd() {
   unsigned long timeNow = millis();                                                     //  Serial_2   ↑   Serial_1   //
   if (timeNow - iTimeSend >= TIME_SEND) {                                               //             ↑              //
     iTimeSend = timeNow;                                                                //        ╔═════════╗         //
-    // Uart1//                                                                          //   LP ╠═╣    ↑    ╠═╣  PP   //
-
-
-    sendSerial(1, 1, /*enable_1,*/ 2, /*controlMode_Blynk,*/ speeds.leftSpeed, -speeds.leftSpeed);    // SLAVE  ║    ↑    ║   SLAVE //
-    //                                         PP                PT                     //        ║    ↑    ║         //
+    // Uart1,     ENNABLE,   MODE,       LEFT SPEED,       RIGHT SPEED                  //   LP ╠═╣    ↑    ╠═╣  PP   //
+    sendSerial(1, buttonD, 2, dirLeft, speeds.leftSpeed, dirRight, speeds.rightSpeed);  // MASTER ║    ↑    ║  MASTER //
+    //                                                                                  //        ║    ↑    ║         //
     // Uart2 //                                                                         //        ║    ↑    ║         //
-    sendSerial(2, 1, /*enable_2,*/ 2, /*controlMode_Blynk,*/ -speeds.rightSpeed, speeds.rightSpeed);  //   LT ╠═╣    ↑    ╠═╣  PT   //
-    //                                         LP                LT                     // MASTER ╚═════════╝  MASTER //
+    // sendSerial(2, buttonD, 2, -speeds.rightSpeed, speeds.rightSpeed);                //   LT ╠═╣    ↑    ╠═╣  PT   //
+    //                                         LP                LT                     //  SLAVE ╚═════════╝   SLAVE //
   //                                                                                    //             ↑              //
   //                                                                                    ////////////////////////////////
  
-  // np << "Serinf << np << "Serial 1: " << "enable: " << enable_1 << " mode: " << controlMode_Blynk << " PP: " << speeds.leftSpeed << " PT: " << -speeds.leftSpeed << endl;
-  // inf << ial 2: " << "enable: " << enable_2 << " mode: " << controlMode_Blynk << " LP: " << speeds.rightSpeed << " LT: " << -speeds.rightSpeed << endl;
-  // Serial.print(-speeds.rightSpeed);
-  // Serial.print(" ");
-  // Serial.println(Serial2.available());
-  // Serial.print(" ");
-  // Serial.print(enable_2);
-  // Serial.print(" ");
-  // Serial.println(controlMode_Blynk);
   }
 
 // if (timeoutFlgSerial_2 && (loop_counter % 1000 == 0)) {

@@ -14,6 +14,7 @@
 extern int16_t leftStickX;    //
 extern int16_t leftStickY;    //
 extern int threePositionSwitchC;
+extern int buttonD;
 
 //------------------------------------------------------------------------
 // struct

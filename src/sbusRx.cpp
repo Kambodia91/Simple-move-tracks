@@ -58,6 +58,7 @@ unsigned long endTime;
 unsigned long elapsedTime;
 
 int threePositionSwitchC;
+int buttonD;
 
 
 //------------------------------------------------------------------------
@@ -202,7 +203,7 @@ void loopReadSbusRx() {
   int buttonH = (data.ch[9] > 1000) ? 1 : 0;
 
 //---------------------------------------------------------Kanał 10
-  int buttonD = (data.ch[10] > 1000) ? 1 : 0;
+  buttonD = (data.ch[10] > 1000) ? 1 : 0;
 //---------------------------------------------------------Kanał 11
   int potentiometerValueRight = scaleValue(data.ch[11], 306, 1694, 0, 180);
 

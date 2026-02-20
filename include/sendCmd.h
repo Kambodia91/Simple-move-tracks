@@ -14,8 +14,10 @@ typedef struct{
    uint16_t start;
    int16_t  enableMotors;
    int16_t  controlMode;
-   int16_t  speedMaster;
-   int16_t  speedSlave;
+   int16_t  dirLeft;
+   int16_t  speedLeft;
+   int16_t  dirRight;
+   int16_t  speedRight;
    uint16_t checksum;
 } SerialCommand;
 
