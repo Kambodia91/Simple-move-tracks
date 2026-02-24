@@ -69,14 +69,13 @@ bool      timeoutMsgSerial_2 = 0;
 uint16_t  timeoutCntSerial_1 = 0;               // Timeout counter for Rx Serial command
 uint8_t   timeoutFlgSerial_1 = 0;               // Timeout Flag for Rx Serial command: 0 = OK, 1 = Problem detected (line disconnected or wrong Rx data)
 bool      timeoutMsgSerial_1 = 0;
-
-bool      dirLeft = 0;
-bool      dirRight = 1;
+uint16_t    dirLeft = 0;
+uint16_t    dirRight = 1;
 
 //------------------------------------------------------------------------
 // sending procedure
 //------------------------------------------------------------------------ 
-void sendSerial(int8_t serialPort, int16_t uEnableMotors, int16_t uControlMode, int16_t uDirLeft, int16_t uSpeedLeft, int16_t uDirRight, int16_t uSpeedRight) {
+void sendSerial(int8_t serialPort, int16_t uEnableMotors, int16_t uControlMode, int16_t uSpeedLeft, int16_t uSpeedRight) {
   
   HardwareSerial* serial;
     
@@ -100,16 +99,12 @@ void sendSerial(int8_t serialPort, int16_t uEnableMotors, int16_t uControlMode, 
   Command.start           = (uint16_t)START_FRAME;    // Start Frame  
   Command.enableMotors    = (int16_t)uEnableMotors;   // Enable Motors
   Command.controlMode     = (int16_t)uControlMode;    // Enable Motors
-  Command.dirLeft         = (int16_t)uDirLeft;        // Direction Left
   Command.speedLeft       = (int16_t)uSpeedLeft;      // Speed Left
-  Command.dirRight        = (int16_t)uDirRight;       // Direction Right
   Command.speedRight      = (int16_t)uSpeedRight;     // Speed Right
   Command.checksum        = (uint16_t)( Command.start ^ 
                                         Command.enableMotors ^ 
                                         Command.controlMode ^ 
-                                        Command.dirLeft ^
                                         Command.speedLeft ^ 
-                                        Command.dirRight ^
                                         Command.speedRight);
   #ifdef PRINT_SERIAL_DATA
   //inf << Command.start << " , " << Command.enableMotors << " , " << Command.controlMode  << " , " << Command.speedLeft << " , " << Command.speedRight << " , " << Command.checksum << " , " << serialPort << endl;
@@ -322,16 +317,16 @@ void setupSendCmd() {
 //------------------------------------------------------------------------ 
 void loopSendCmd() {
   // Send commands                                                                      ////////////////////////////////
-  unsigned long timeNow = millis();                                                     //  Serial_2   ↑   Serial_1   //
-  if (timeNow - iTimeSend >= TIME_SEND) {                                               //             ↑              //
+  unsigned long timeNow = millis();                                                     //  Serial_1 Control/FeedBack //
+  if (timeNow - iTimeSend >= TIME_SEND) {                                               //  Serial_2         FeedBack //
     iTimeSend = timeNow;                                                                //        ╔═════════╗         //
     // Uart1,     ENNABLE,   MODE,       LEFT SPEED,       RIGHT SPEED                  //   LP ╠═╣    ↑    ╠═╣  PP   //
-    sendSerial(1, buttonD, 2, dirLeft, speeds.leftSpeed, dirRight, speeds.rightSpeed);  // MASTER ║    ↑    ║  MASTER //
+    sendSerial(1, buttonD, 2, speeds.leftSpeed, speeds.rightSpeed);                     // MASTER ║    ↑    ║  MASTER //
     //                                                                                  //        ║    ↑    ║         //
     // Uart2 //                                                                         //        ║    ↑    ║         //
     // sendSerial(2, buttonD, 2, -speeds.rightSpeed, speeds.rightSpeed);                //   LT ╠═╣    ↑    ╠═╣  PT   //
     //                                         LP                LT                     //  SLAVE ╚═════════╝   SLAVE //
-  //                                                                                    //             ↑              //
+  //                                                                                    //                            //
   //                                                                                    ////////////////////////////////
  
   }
@@ -343,7 +338,7 @@ void loopSendCmd() {
 // Receive commands
 Receive_serial_1();
 Receive_serial_2();
-  // inf << np << " PP: " << speeds.leftSpeed << " PT: " << -speeds.leftSpeed <<  " LP: " << speeds.rightSpeed << " LT: " << -speeds.rightSpeed << endl;
+//   inf << np << " : L" << dirLeft << " Speed: "<< speeds.leftSpeed << " P: " << dirRight << " Speed: " << speeds.rightSpeed <<  " enable: " << buttonD << " LT: " << endl;
 loop_counter++;
 }
 
