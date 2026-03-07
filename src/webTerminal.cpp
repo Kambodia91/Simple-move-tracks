@@ -100,7 +100,7 @@ padding:10px;
 
 <body>
 
-<h2>Kosiarka – Panel sterowania</h2>
+<h2>Panel sterowania</h2>
 
 <div class="panel">
 
@@ -313,13 +313,13 @@ void setupWebTerminal() {
     if (cmd == "startEngine") {
 
         //startEngine();
-
+        Serial.println("startEngine");
     }
 
     if (cmd == "stopEngine") {
 
         //stopEngine();
-
+        Serial.println("stopEngine");
     }
 
     if (cmd == "setPID") {
@@ -335,7 +335,7 @@ void setupWebTerminal() {
     if (cmd == "setCutHeight") {
 
         //cuttingHeight = doc["height"];
-
+        Serial.println("setCutHeight update");
     }
   }
 });
