@@ -32,10 +32,10 @@
 #define SWITCH_4                32
 //-------------------------Send/Recived-Cmd-------------------------//
 
-#define HOVER_SERIAL_BAUD   115200      // [-] Baud rate for HoverSerial (used to communicate with the hoverboard)
-#define START_FRAME         0xABCD     	// [-] Start frme definition for reliable serial communication
-#define TIME_SEND           50          // [ms] Sending time interval
-#define SERIAL_TIMEOUT      2000         // [-] Serial timeout duration for the received data. 160 ~= 0.8 sec. Calculation: 0.8 sec / 0.005 sec
+#define HOVER_SERIAL_BAUD   115200                                  // [-] Baud rate for HoverSerial (used to communicate with the hoverboard)
+#define START_FRAME         0xABCD     	                            // [-] Start frme definition for reliable serial communication
+#define TIME_SEND           25                                      // [ms] Sending time interval
+#define SERIAL_TIMEOUT      784                                     // [cycle] Serial timeout duration for the received data. 784 ~= 0.8 sec. Calculate (98 cycle / 0,1 sec).
 // #define PRINT_SERIAL_DATA
 // #define DEBUG_SERIAL1_RX              // [-] Debug received data. Prints all bytes to serial (comment-out to disable)
 // #define DEBUG_SERIAL2_RX              // [-] Debug received data. Prints all bytes to serial (comment-out to disable)

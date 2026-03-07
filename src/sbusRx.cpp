@@ -129,6 +129,7 @@ void loopReadSbusRx() {
       data.ch[1] = 1000;                      // Ustawiam 0 na joystiku
       leftStickY = 0;                         // Ustawiam 0 na joystiku
       leftStickX = 0;                         // Ustawiam 0 na joystiku
+      buttonD = 0;                            // Enable = 0;
       threePositionSwitchC = 1;               // Pozycja srodkowa
       data.failsafe = 1;
     } else {
@@ -145,6 +146,7 @@ void loopReadSbusRx() {
       data.ch[1] = 1000;                      // Ustawiam 0 na joystiku
       leftStickY = 0;                         // Ustawiam 0 na joystiku
       leftStickX = 0;                         // Ustawiam 0 na joystiku
+      buttonD = 0;                            // Enable = 0;
       threePositionSwitchC = 1;               // Pozycja srodkowa
     } else {
     timeoutMsglost_frame = 0;
@@ -161,6 +163,8 @@ void loopReadSbusRx() {
       data.ch[1] = 1000;
       leftStickY = 0; 
       leftStickX = 0;
+      buttonD = 0;                            // Enable = 0;
+      threePositionSwitchC = 1;               // Pozycja srodkowa
       digitalWrite(safetyStopPin, LOW);       // Wyłączam zapłom
 
     } else {
@@ -171,11 +175,9 @@ void loopReadSbusRx() {
 
 //----------------------KANAŁY Z ODBIORNIKA---------------------//
 //---------------------------------------------------------Kanał 0
-  //leftStickX = scaleValue(data.ch[0], 306, 1693, -steer_Blynk, steer_Blynk, 985, 1015);
   leftStickX = scaleValue(data.ch[0], 306, 1693, -potentiometerValueA, potentiometerValueA, 985, 1015);
 
 //---------------------------------------------------------Kanał 1
-  //leftStickY = scaleValue(data.ch[1], 306, 1693, -speed_Blynk, speed_Blynk, 985, 1015);
   leftStickY = scaleValue(data.ch[1], 306, 1693, -potentiometerValueC, potentiometerValueC, 985, 1015);
 
 //---------------------------------------------------------Kanał 2

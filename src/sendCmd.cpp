@@ -132,7 +132,7 @@ void Receive_serial_1()
   
   if (timeoutFlgSerial_1 == 1 ) {
     if (!timeoutMsgSerial_1) {
-    inf << "Serial1 no connect." <<  endl;
+    inf << "Serial1 RX no connection to the inventer feedback." <<  endl;
     timeoutMsgSerial_1 = 1;
     }
   }
@@ -197,13 +197,12 @@ void Receive_serial_1()
           #endif
         }
         idx_Serial1 = 0;    // Reset the index (it prevents to enter in this if condition in the next cycle)
+    } 
+    if (timeoutCntSerial_1++ >= SERIAL_TIMEOUT) {              // Timeout qualification
+      timeoutFlgSerial_1 = 1;                                     // Timeout detected
+      timeoutCntSerial_1 = SERIAL_TIMEOUT;                        // Limit timout counter value
     } else {
-          // if (timeoutCntSerial_1++ >= SERIAL_TIMEOUT) {              // Timeout qualification
-          //       timeoutFlgSerial_1 = 1;                                     // Timeout detected
-          //       timeoutCntSerial_1 = SERIAL_TIMEOUT;                        // Limit timout counter value
-          //   } else {
-          //       // Serial.println(timeoutCntSerial_1);
-          //   }
+      // Serial.println(timeoutCntSerial_1);
     }
 
     // Update previous states
@@ -223,7 +222,7 @@ void Receive_serial_2()
 
   if (timeoutFlgSerial_2 == 1 ) {
     if (!timeoutMsgSerial_2) {
-    inf << "Serial2 no connect." <<  endl;
+    inf << "Serial2 RX no connection to the inventer feedback ." <<  endl;
     timeoutMsgSerial_2 = 1;
     }
   }
@@ -287,15 +286,13 @@ void Receive_serial_2()
           #endif
         }
         idx_Serial2 = 0;    // Reset the index (it prevents to enter in this if condition in the next cycle)
-    } else {
-          // if (timeoutCntSerial_2++ >= SERIAL_TIMEOUT) {              // Timeout qualification
-          //       timeoutFlgSerial_2 = 1;                                     // Timeout detected
-          //       timeoutCntSerial_2 = SERIAL_TIMEOUT;                        // Limit timout counter value
-          // } else {
-          //       // Serial.println(timeoutCntSerial_2);
-          // }
     }
-
+    if (timeoutCntSerial_2++ >= SERIAL_TIMEOUT) {              // Timeout qualification
+      timeoutFlgSerial_2 = 1;                                     // Timeout detected
+      timeoutCntSerial_2 = SERIAL_TIMEOUT;                        // Limit timout counter value
+    } else {
+      //Serial.println(timeoutCntSerial_2);
+    }
     // Update previous states
     incomingBytePrev_Serial2 = incomingByte_Serial2;
 }
@@ -328,7 +325,8 @@ void loopSendCmd() {
     //                                         LP                LT                     //  SLAVE ╚═════════╝   SLAVE //
   //                                                                                    //                            //
   //                                                                                    ////////////////////////////////
- 
+//  inf << loop_counter << endl;
+//   loop_counter = 0;
   }
 
 // if (timeoutFlgSerial_2 && (loop_counter % 1000 == 0)) {
@@ -340,6 +338,7 @@ Receive_serial_1();
 Receive_serial_2();
 //   inf << np << " : L" << dirLeft << " Speed: "<< speeds.leftSpeed << " P: " << dirRight << " Speed: " << speeds.rightSpeed <<  " enable: " << buttonD << " LT: " << endl;
 loop_counter++;
+
 }
 
 //------------------------------------------------------------------------
