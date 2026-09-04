@@ -26,12 +26,15 @@ WebSocketsServer webSocket = WebSocketsServer(81);
 WebTerminal webTerminal;
 
 size_t WebTerminal::write(uint8_t c) {
+
     buffer += (char)c;
-    if (c == '\n') {
-      flush();
+
+    if (c == '\n' || buffer.length() > 120) {
+        flush();
     }
+
     return 1;
-  }
+}
   
   void WebTerminal::flush() {
     if (buffer.length() > 0) {
@@ -107,6 +110,10 @@ padding:10px;
 <h3>Dane</h3>
 
 RPM: <span id="rpm">0</span><br>
+Prad silnika 1 master: <span id="current1Master">0</span> A<br>
+Prad silnika 1 slave: <span id="current1Slave">0</span> A<br>
+Prad silnika 2 master: <span id="current2Master">0</span> A<br>
+Prad silnika 2 slave: <span id="current2Slave">0</span> A<br>
 Temperatura: <span id="temp">0</span> C<br>
 Napicie: <span id="volt">0</span> V<br>
 Kat: <span id="angle">0</span><br>
@@ -168,6 +175,10 @@ D <input id="d" type="number" step="0.01"><br>
 let ws = new WebSocket('ws://' + location.hostname + ':81/');
 
 let rpmSpan=document.getElementById("rpm");
+let current1MasterSpan=document.getElementById("current1Master");
+let current1SlaveSpan=document.getElementById("current1Slave");
+let current2MasterSpan=document.getElementById("current2Master");
+let current2SlaveSpan=document.getElementById("current2Slave");
 let tempSpan=document.getElementById("temp");
 let voltSpan=document.getElementById("volt");
 let angleSpan=document.getElementById("angle");
@@ -200,6 +211,10 @@ try{
 let data=JSON.parse(event.data);
 
 rpmSpan.innerText=data.rpm;
+current1MasterSpan.innerText=data.current1Master;
+current1SlaveSpan.innerText=data.current1Slave;
+current2MasterSpan.innerText=data.current2Master;
+current2SlaveSpan.innerText=data.current2Slave;
 tempSpan.innerText=data.temp;
 voltSpan.innerText=data.volt;
 angleSpan.innerText=data.angle;
@@ -287,7 +302,6 @@ terminal.innerHTML+="> "+cmd+"<br>";
 void setupWebTerminal() {  
   // Start Access Point
   WiFi.softAP(ssid, password);
-  Serial.println("Uruchomiono Access Point: " + WiFi.softAPIP().toString());
 
   // HTTP server
   server.on("/", []() {
@@ -301,7 +315,9 @@ void setupWebTerminal() {
 
   if (type == WStype_TEXT) {
 
-    String msg = String((char*)payload);
+    String msg;
+    msg.reserve(length + 1);
+    msg.concat((const char *)payload, length);
 
     DynamicJsonDocument doc(256);
     DeserializationError err = deserializeJson(doc, msg);
@@ -313,13 +329,13 @@ void setupWebTerminal() {
     if (cmd == "startEngine") {
 
         //startEngine();
-        Serial.println("startEngine");
+        webSocket.broadcastTXT("startEngine");
     }
 
     if (cmd == "stopEngine") {
 
         //stopEngine();
-        Serial.println("stopEngine");
+        webSocket.broadcastTXT("stopEngine");
     }
 
     if (cmd == "setPID") {
@@ -328,14 +344,14 @@ void setupWebTerminal() {
         //pidI = doc["i"];
         //pidD = doc["d"];
 
-        Serial.println("PID updated");
+        webSocket.broadcastTXT("PID updated");
 
     }
 
     if (cmd == "setCutHeight") {
 
         //cuttingHeight = doc["height"];
-        Serial.println("setCutHeight update");
+        webSocket.broadcastTXT("setCutHeight update");
     }
   }
 });
@@ -355,6 +371,10 @@ void loopWebTerminal() {
     StaticJsonDocument<256> doc;
 
     doc["rpm"] = rpmMower;
+    doc["current1Master"] = Feedback_Serial1.motor_dc_currMaster / 100.0;
+    doc["current1Slave"] = Feedback_Serial1.motor_dc_currSlave / 100.0;
+    doc["current2Master"] = Feedback_Serial2.motor_dc_currMaster / 100.0;
+    doc["current2Slave"] = Feedback_Serial2.motor_dc_currSlave / 100.0;
     doc["temp"] = oilTemperature;
     doc["volt"] = Feedback_Serial1.batVoltage;
     doc["angle"] = angle;

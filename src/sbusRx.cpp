@@ -56,6 +56,7 @@ uint16_t steer_Blynk;
 unsigned long startTime;
 unsigned long endTime;
 unsigned long elapsedTime;
+uint32_t lastValidSbus = 0;
 
 int threePositionSwitchC;
 int buttonD;
@@ -86,6 +87,7 @@ void setupSerialSbusRx() {
   sbus_rx.Begin();
   data.failsafe = 1;
   data.lost_frame = 1;
+  lastValidSbus = millis();
 
 }
 
@@ -107,16 +109,15 @@ void loopReadSbusRx() {
     // Serial.println(data.failsafe);
     timeoutFlgSbusRx = 0; 
     timeoutCntSbusRx = 0;
+    lastValidSbus = millis();
     
   } else {
 
 
-    if (timeoutCntSbusRx++ >= SERIAL_TIMEOUT) {       // Timeout qualification
-        timeoutFlgSbusRx = 1;                         // Timeout detected
-        timeoutCntSbusRx = SERIAL_TIMEOUT;            // Limit timout counter value
-      } else {
-        // /Serial.println(timeoutCntSbusRx);
-      }
+    if ((uint32_t)(millis() - lastValidSbus) >= SBUS_TIMEOUT_MS) {
+      timeoutFlgSbusRx = 1;
+      timeoutCntSbusRx = SERIAL_TIMEOUT;
+    }
   }
 
 //--------------------------------------------// [0]-OK [1]-NOK
@@ -137,7 +138,7 @@ void loopReadSbusRx() {
     }
 
 //--------------------------------------------// [0]-OK [1]-NOK
-    if (data.lost_frame == 1) {               // Odbiornik stracił zasięg 
+    if (data.lost_frame == 1 && !timeoutFlgSbusRx) { // Pojedyncza utracona ramka
       if (!timeoutMsglost_frame) {
       inf << "Transmiter lost frame." <<  endl;
       timeoutMsglost_frame = 1;
@@ -153,7 +154,8 @@ void loopReadSbusRx() {
     }
 
 //--------------------------------------------// [0]-OK [1]-NOK
-    if (data.failsafe == 1) {                 // Odbiornik wykrył wyłączony nadajnik
+    bool sbusSafetyActive = timeoutFlgSbusRx || data.failsafe || data.lost_frame;
+    if (sbusSafetyActive) {                   // Brak bezpiecznej, aktualnej komendy
       if (!timeoutMsgfailsafe) {
       inf << "SAFETY STOP." <<  endl;
       timeoutMsgfailsafe = 1;
@@ -208,6 +210,13 @@ void loopReadSbusRx() {
   buttonD = (data.ch[10] > 1000) ? 1 : 0;
 //---------------------------------------------------------Kanał 11
   int potentiometerValueRight = scaleValue(data.ch[11], 306, 1694, 0, 180);
+
+  if (sbusSafetyActive) {
+    leftStickX = 0;
+    leftStickY = 0;
+    buttonD = 0;
+    threePositionSwitchC = 1;
+  }
 
 // Serial.print(leftStickX);
 // Serial.print(" ");

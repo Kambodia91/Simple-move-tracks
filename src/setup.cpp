@@ -137,8 +137,6 @@ void SerialSetup() {
   //Serial.begin(SpeedRate);
   //Serial.println("Setup Serial Begin.");
   delay(100);
-  logger.add(Serial, LOG_LEVEL_INFO, true); // This will log everything on Serial
- // logger.add(Terminal, LOG_LEVEL_VERBOSE, true); // This will log everything on Serial
   logger.add(webTerminal, LOG_LEVEL_INFO, true); // This will log everything on Serial
 
   //logger.disableLevelName(Terminal);

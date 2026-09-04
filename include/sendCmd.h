@@ -33,6 +33,8 @@ typedef struct{
    int16_t  enableFinSlave;
    int16_t  chargeStatus;
    uint16_t cmdLed;
+   int16_t  motor_dc_currMaster;
+   int16_t  motor_dc_currSlave;
    uint16_t checksum;
 } SerialFeedback;
 

@@ -36,6 +36,8 @@
 #define START_FRAME         0xABCD     	                            // [-] Start frme definition for reliable serial communication
 #define TIME_SEND           25                                      // [ms] Sending time interval
 #define SERIAL_TIMEOUT      784                                     // [cycle] Serial timeout duration for the received data. 784 ~= 0.8 sec. Calculate (98 cycle / 0,1 sec).
+#define SERIAL_TIMEOUT_MS   800                                     // [ms] Timeout for missing valid feedback frame
+#define SBUS_TIMEOUT_MS     200                                     // [ms] Timeout for missing SBUS frame
 // #define PRINT_SERIAL_DATA
 // #define DEBUG_SERIAL1_RX              // [-] Debug received data. Prints all bytes to serial (comment-out to disable)
 // #define DEBUG_SERIAL2_RX              // [-] Debug received data. Prints all bytes to serial (comment-out to disable)

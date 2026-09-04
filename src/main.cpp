@@ -25,8 +25,8 @@ extern unsigned long timeNow; // wysylanie do innych plikow
 //------------------------------------------------------------------------ 
 void setup () {
   setupSerialSbusRx();
-  setupPlatform();  // installation of necessary things
   setupWebTerminal();
+  setupPlatform();  // installation of necessary things
   setupSendCmd();
   setupStarter();
   setupPrm01();
