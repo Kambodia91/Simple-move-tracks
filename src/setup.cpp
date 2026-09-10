@@ -20,7 +20,7 @@
 #include <BlynkSimpleEsp32.h>                      // [Blynk]
 #endif
 
-#if defined(VARIANT_ESP32_LOLIN)
+#if defined(VARIANT_ESP32_LOLIN) || defined(VARIANT_ESP32_WROOM32)
 #include <ArduinoJson.h>                           // https://github.com/bblanchon/ArduinoJson
 #include <DNSServer.h>
 #include <ESPmDNS.h>
@@ -61,7 +61,7 @@
 // objects
 //------------------------------------------------------------------------ 
 
-#if defined(VARIANT_ESP32_LOLIN) || defined(VARIANT_ESP8266)
+#if defined(VARIANT_ESP32_LOLIN) || defined(VARIANT_ESP32_WROOM32) || defined(VARIANT_ESP8266)
 WiFiClient espClient;
 HTTPClient httpRead;                               // WebHook.
 HTTPClient httpWrite;                              // WebHook.
@@ -274,7 +274,7 @@ void setupPlatform() {
     GpioInit();
     
     MowerLogo();
-    #if defined(VARIANT_ESP8266) || defined(VARIANT_ESP32_LOLIN)
+    #if defined(VARIANT_ESP8266) || defined(VARIANT_ESP32_LOLIN) || defined(VARIANT_ESP32_WROOM32)
 
     #endif
 }
@@ -285,7 +285,7 @@ void setupPlatform() {
 void loopPlatform() {
     SpeedTest = (SpeedTest+1);
 
-    #if defined(VARIANT_ESP8266) || defined(VARIANT_ESP32_LOLIN)
+    #if defined(VARIANT_ESP8266) || defined(VARIANT_ESP32_LOLIN) || defined(VARIANT_ESP32_WROOM32)
 
     #endif
 }

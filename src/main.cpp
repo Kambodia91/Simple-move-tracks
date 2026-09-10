@@ -18,7 +18,7 @@
 
 // #include "voltageRegulator.h"
 
-extern unsigned long timeNow; // wysylanie do innych plikow
+unsigned long timeNow = 0; // wysylanie do innych plikow
 
 //------------------------------------------------------------------------
 // main setup
@@ -48,8 +48,8 @@ void loop () {
   loopSendCmd();
   loopStarter();
   loopPrm01();
-  loopControlServo();
   loopTemperatureDs18b20();
+  loopControlServo();
   // loopVoltageRegulator();
   loopCuttingHeight();
 

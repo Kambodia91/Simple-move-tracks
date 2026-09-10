@@ -33,10 +33,7 @@ DS18B20 sensor(&oneWire);
 //------------------------------------------------------------------------
 // variables 
 //------------------------------------------------------------------------
-unsigned long timeNow;                                                    // czas z main.cpp
 float oilTemperature;                                                     // wysylanie zmiennej di innych plikow
-int roznicaCzasu;
-int zapamietanyCzas;
 
 //------------------------------------------------------------------------
 // procedures setup Temperature Ds18b20
@@ -50,12 +47,13 @@ void setupTemperatureDs18b20() {
 // procedures loop Temperature Ds18b20
 //------------------------------------------------------------------------ 
 void loopTemperatureDs18b20() {
-    roznicaCzasu = timeNow - zapamietanyCzas;
-   
-    if (roznicaCzasu >= 250UL) {
+    static unsigned long lastTempRead = 0;
+    unsigned long now = millis();
+
+    if (now - lastTempRead >= 250UL) {
         sensor.requestTemperatures();
         oilTemperature = sensor.getTempC();
-        //verb << "Temp: " << oilTemperature << " kąd serwa: " << angle << endl;
-        zapamietanyCzas = timeNow;
+        // inf << "Temp: " << oilTemperature << " kąd serwa: " << angle << endl;
+        lastTempRead = now;
     }
 }

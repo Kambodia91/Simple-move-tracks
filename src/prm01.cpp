@@ -92,20 +92,18 @@ void set2() {
   
   byte voltesHi = highByte(streamData.battVoltage);
   byte voltesLo = lowByte(streamData.battVoltage);
-  
-  int32_t lat = 1e7*streamData.gps_lat;
+
+  int32_t lat = (int32_t)round(streamData.gps_lat * 1e7f);
   byte latHHi = byte((lat >> 24) & 0x000000FF);
   byte latHi  = byte((lat >> 16) & 0x000000FF);
   byte latLo  = byte((lat >> 8)  & 0x000000FF);
   byte latLLi = byte((lat >> 0)  & 0x000000FF);
 
-  int32_t lon = 1e7*streamData.gps_lon;
+  int32_t lon = (int32_t)round(streamData.gps_lon * 1e7f);
   byte lonHHi = byte((lon >> 24) & 0x000000FF);
   byte lonHi  = byte((lon >> 16) & 0x000000FF);
   byte lonLo  = byte((lon >> 8)  & 0x000000FF);
   byte lonLLi = byte((lon >> 0)  & 0x000000FF);
-
-
 
   byte buffer[16] = {
     0x89, 0xCD, 
@@ -114,8 +112,6 @@ void set2() {
     voltesHi, voltesLo,
     latHHi, latHi, latLo , latLLi, 
     lonHHi, lonHi, lonLo , lonLLi,
-    //latit.b[3], latit.b[2], latit.b[1], latit.b[0],
-    //longt.b[3], longt.b[2], longt.b[1], longt.b[0],
     0x00
   };
 

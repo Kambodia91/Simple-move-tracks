@@ -57,6 +57,63 @@ button:hover{
     margin-top:20px;
 }
 
+.status-row{
+    margin-top:12px;
+    display:flex;
+    gap:12px;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+.status-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    min-width:90px;
+}
+
+.status-label{
+    font-size:12px;
+    color:lime;
+}
+
+.status-text{
+    font-size:12px;
+    font-weight:bold;
+    min-width:36px;
+    display:inline-block;
+}
+
+.status-ok{
+    color:#2ecc71;
+}
+
+.status-error{
+    color:#e74c3c;
+}
+
+.led{
+    display:inline-block;
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    border:2px solid #444;
+    background:#222;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+}
+
+.led-ok{
+    background:#2ecc71;
+    border-color:#1e8f52;
+    box-shadow: 0 0 8px rgba(46, 204, 113, 0.8);
+}
+
+.led-error{
+    background:#e74c3c;
+    border-color:#b93b2f;
+    box-shadow: 0 0 8px rgba(231, 76, 60, 0.9);
+}
+
 </style>
 
 </head>
@@ -95,6 +152,25 @@ R"rawliteral(
 
 let terminal = document.getElementById("terminal");
 
+function setLedState(id, isError)
+{
+    let led = document.getElementById(id);
+    if(!led) return;
+
+    led.classList.toggle("led-error", !!isError);
+    led.classList.toggle("led-ok", !isError);
+}
+
+function setStatusText(id, isError)
+{
+    let el = document.getElementById(id);
+    if(!el) return;
+
+    el.textContent = isError ? "TIMEOUT" : "OK";
+    el.classList.toggle("status-error", !!isError);
+    el.classList.toggle("status-ok", !isError);
+}
+
 let ws = new WebSocket('ws://' + location.hostname + ':81/');
 
 ws.onmessage = function(event)
@@ -114,6 +190,14 @@ ws.onmessage = function(event)
             document.getElementById("current2Master").innerText = json.current2Master;
             document.getElementById("current2Slave").innerText = json.current2Slave;
             document.getElementById("enable").innerText = json.enable;
+
+            setLedState("sbusLed", !!json.sbusTimeout);
+            setLedState("uart1Led", !!json.uart1Timeout);
+            setLedState("uart2Led", !!json.uart2Timeout);
+
+            setStatusText("sbusState", !!json.sbusTimeout);
+            setStatusText("uart1State", !!json.uart1Timeout);
+            setStatusText("uart2State", !!json.uart2Timeout);
         }
 
         // ---------- TERMINAL ----------

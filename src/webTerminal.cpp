@@ -26,6 +26,19 @@ WebServer server(80);
 WebSocketsServer webSocket = WebSocketsServer(81);
 WebTerminal webTerminal;
 
+const char* terminalLogo = R"rawliteral(
+     __                           __  ___                          
+    / /  ____ __      ______     /  |/  /___ _      _____  _____   
+   / /  / __ `/ | /| / / __ \   / /|_/ / __ \ | /| / / _ \/ ___/
+  / /__/ /_/ /| |/ |/ / / / /  / /  / / /_/ / |/ |/ /  __/ /       
+ /_____|__,_/ |__/|__/_/ /_/  /_/  /_/\____/|__/|__/\___/_/ Ver: 0.6
+
+)rawliteral";
+
+extern uint8_t timeoutFlgSbusRx;
+extern uint8_t timeoutFlgSerial_1;
+extern uint8_t timeoutFlgSerial_2;
+
 size_t WebTerminal::write(uint8_t c) {
 
     buffer += (char)c;
@@ -39,7 +52,13 @@ size_t WebTerminal::write(uint8_t c) {
   
   void WebTerminal::flush() {
     if (buffer.length() > 0) {
-      webSocket.broadcastTXT(buffer);
+      StaticJsonDocument<256> doc;
+      doc["type"] = "terminal";
+      doc["data"] = buffer;
+
+      String json;
+      serializeJson(doc, json);
+      webSocket.broadcastTXT(json);
       buffer = "";
     }
   }
@@ -64,6 +83,16 @@ void setupWebTerminal() {
   // WebSocket server
   webSocket.begin();
   webSocket.onEvent([](uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
+
+  if (type == WStype_CONNECTED) {
+    StaticJsonDocument<512> doc;
+    doc["type"] = "terminal";
+    doc["data"] = terminalLogo;
+
+    String json;
+    serializeJson(doc, json);
+    webSocket.sendTXT(num, json);
+  }
 
   if (type == WStype_TEXT) {
 
@@ -136,6 +165,9 @@ void loopWebTerminal() {
 
     doc["speedL"] = speeds.leftSpeed;
     doc["speedR"] = speeds.rightSpeed;
+    doc["sbusTimeout"] = timeoutFlgSbusRx;
+    doc["uart1Timeout"] = timeoutFlgSerial_1;
+    doc["uart2Timeout"] = timeoutFlgSerial_2;
 
     String json;
     serializeJson(doc, json);
