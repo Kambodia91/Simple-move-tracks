@@ -107,7 +107,52 @@ void setupWebTerminal() {
 
     String cmd = doc["cmd"];
 
-    if (cmd == "startEngine") {
+    if (cmd == "sBus") {
+        String response = "SBUS RC status\n";
+        response += "timeoutFlgSbusRx=" + String(timeoutFlgSbusRx) + "\n";
+        response += "leftStickX=" + String(leftStickX) + "\n";
+        response += "leftStickY=" + String(leftStickY) + "\n";
+        response += "threePositionSwitchC=" + String(threePositionSwitchC) + "\n";
+        response += "potentiometerValueA=" + String(potentiometerValueA) + "\n";
+        response += "potentiometerValueC=" + String(potentiometerValueC) + "\n";
+        response += "buttonD=" + String(buttonD) + "\n";
+        response += "lowSpeedEngine=" + String(lowSpeedEngine) + "\n";
+        response += "safetyStop=" + String(safetyStop ? 1 : 0) + "\n";
+
+        StaticJsonDocument<512> terminalDoc;
+        terminalDoc["type"] = "terminal";
+        terminalDoc["data"] = response;
+
+        String json;
+        serializeJson(terminalDoc, json);
+        webSocket.sendTXT(num, json);
+    }
+
+    if (cmd == "pinInfo") {
+        String response = "Project pin usage\n";
+        response += "LED_BUILTIN=" + String(LED_BUILTIN) + " (status LED)\n";
+        response += "SENSOR_PIN=" + String(SENSOR_PIN) + " (sensor input, currently not actively used in setup)\n";
+        response += "OUTPUT_PIN=" + String(OUTPUT_PIN) + " (output relay/driver)\n";
+        response += "SERWO_THROTTLE=" + String(SERWO_THROTTLE) + " (servo throttle)\n";
+        response += "HALL_PIN=" + String(HALL_PIN) + " (tachometer hall input)\n";
+        response += "safetyStopPin=" + String(safetyStopPin) + " (safety stop relay/output)\n";
+        response += "SWITCH_3=" + String(SWITCH_3) + " (switch output)\n";
+        response += "CHARGING_PIN=" + String(CHARGING_PIN) + " (charging relay/output)\n";
+        response += "SWITCH_4=" + String(SWITCH_4) + " (switch output)\n";
+        response += "Serial1 RX/TX = 27/26\n";
+        response += "Serial2 RX/TX = 16/17\n";
+        response += "SBUS RX = Serial (GPIO3, configured by sbus_rx)\n";
+
+        StaticJsonDocument<512> terminalDoc;
+        terminalDoc["type"] = "terminal";
+        terminalDoc["data"] = response;
+
+        String json;
+        serializeJson(terminalDoc, json);
+        webSocket.sendTXT(num, json);
+    }
+
+    if (cmd == "info") {
 
         //startEngine();
         webSocket.broadcastTXT("startEngine");

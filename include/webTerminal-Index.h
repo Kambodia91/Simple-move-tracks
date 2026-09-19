@@ -36,12 +36,21 @@ button:hover{
     background:#222;
 }
 
+input{
+    background:#111;
+    color:lime;
+    border:1px solid lime;
+    padding:8px 10px;
+    min-width:220px;
+    font-family:monospace;
+}
+
 #terminal{
     height:80vh;
     overflow-y:scroll;
     border:1px solid lime;
     padding:10px;
-    line-height:0.7;
+    line-height:0.9;
     font-size:12px;
     white-space:pre;
 }
@@ -55,6 +64,13 @@ button:hover{
 
 .tabcontent{
     margin-top:20px;
+}
+
+.terminal-controls{
+    display:flex;
+    gap:8px;
+    margin-top:12px;
+    align-items:center;
 }
 
 .status-row{
@@ -171,7 +187,30 @@ function setStatusText(id, isError)
     el.classList.toggle("status-ok", !isError);
 }
 
+function sendCommand()
+{
+    let input = document.getElementById("cmdInput");
+    if(!input || !input.value.trim()) return;
+
+    if(typeof ws !== "undefined")
+    {
+        ws.send(JSON.stringify({ cmd: input.value.trim() }));
+        input.value = "";
+    }
+}
+
 let ws = new WebSocket('ws://' + location.hostname + ':81/');
+
+const cmdInput = document.getElementById("cmdInput");
+if(cmdInput)
+{
+    cmdInput.addEventListener("keydown", function(event) {
+        if(event.key === "Enter")
+        {
+            sendCommand();
+        }
+    });
+}
 
 ws.onmessage = function(event)
 {

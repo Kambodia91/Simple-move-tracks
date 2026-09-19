@@ -48,8 +48,8 @@ bool safetyStop;                                   // Sygnał z pilota RC
 
 // extern int16_t RightStickX;   //
 // extern int16_t RightStickY;   //
-int potentiometerValueA;
-int potentiometerValueC;
+int potentiometerValueA =0;
+int potentiometerValueC =0;
 uint16_t speed_Blynk;
 uint16_t steer_Blynk;
 
