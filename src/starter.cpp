@@ -26,7 +26,7 @@ const float rpmThreshold = 2300.0; // obroty po przekroczeniu uruchamia ładowan
 //------------------------------------------------------------------------
 // objects
 //------------------------------------------------------------------------ 
-Tachometer tachometer(HALL_PIN, CHARGING_PIN, rpmThreshold, numMagnets);
+Tachometer tachometer(HALL_PIN, SWITCH_1_CHARGING_PIN, rpmThreshold, numMagnets);
 Tachometer* Tachometer::_instance = nullptr;
 
 //------------------------------------------------------------------------
@@ -141,7 +141,7 @@ void Tachometer::calculateRPM(unsigned long interval) {
 //------------------------------------------------------------------------ 
 void setupStarter(){
     tachometer.begin();
-    pinMode(safetyStopPin, OUTPUT);
+    pinMode(SWITCH_2_IGNITION, OUTPUT);
   }
 
 //------------------------------------------------------------------------

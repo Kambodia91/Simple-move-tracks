@@ -15,6 +15,7 @@
 #include "temperatureDS18B20.h"
 #include "webTerminal.h"
 #include "cuttingHeight.h"
+#include "controlClutchBlade.h"
 
 //------------------------------------------------------------------------
 // define
@@ -40,7 +41,7 @@ const int FAST = 90;
 const int CHOKE = 180;
 
 int angle;
-bool lowSpeedEngine; // [8] Channel RC 0 = 
+bool lowSpeedEngine; // [8] Channel RC 
 //------------------------------------------------------------------------
 // objects
 //------------------------------------------------------------------------ 

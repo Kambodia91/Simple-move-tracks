@@ -15,6 +15,7 @@
 #include "temperatureDS18B20.h"
 #include "webTerminal.h"
 #include "cuttingHeight.h"
+#include "controlClutchBlade.h"
 
 // #include "voltageRegulator.h"
 
@@ -34,7 +35,7 @@ void setup () {
   setupTemperatureDs18b20();
   // setupVoltageRegulator();
   setupCuttingHeight();
-  
+  setupControlClutchBlade();
 }
 
 //------------------------------------------------------------------------
@@ -52,6 +53,7 @@ void loop () {
   loopControlServo();
   // loopVoltageRegulator();
   loopCuttingHeight();
+  loopControlClutchBlade();
 
  
 

@@ -154,7 +154,7 @@ void GpioInit() {
 #endif
 
     // pinMode(SENSOR_PIN, INPUT);
-    pinMode(safetyStopPin, OUTPUT);
+    // pinMode(SWITCH_2_IGNITION, OUTPUT);  // delined in starter.cpp
     pinMode(LED_BUILTIN, OUTPUT);
 }
 

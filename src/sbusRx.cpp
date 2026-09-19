@@ -15,6 +15,7 @@
 #include "temperatureDS18B20.h"
 #include "webTerminal.h"
 #include "cuttingHeight.h"
+#include "controlClutchBlade.h"
 
 #include <stdint.h>
 #include <sbus.h>
@@ -35,7 +36,7 @@ bfs::SbusData data;
 //------------------------------------------------------------------------
 // variables           
 //------------------------------------------------------------------------ 
-uint16_t  timeoutCntSbusRx      = 0;               // Timeout counter for Rx Serial command
+// uint16_t  timeoutCntSbusRx      = 0;               // Timeout counter for Rx Serial command
 uint8_t   timeoutFlgSbusRx      = 0;               // Timeout Flag for Rx Serial command: 0 = OK, 1 = Problem detected (line disconnected or wrong Rx data)
 bool      timeoutMsgSbusRx      = 0;
 bool      timeoutMsgfailsafe    = 0;
@@ -108,7 +109,7 @@ void loopReadSbusRx() {
     // Serial.print(" ");
     // Serial.println(data.failsafe);
     timeoutFlgSbusRx = 0; 
-    timeoutCntSbusRx = 0;
+    // timeoutCntSbusRx = 0;
     lastValidSbus = millis();
     
   } else {
@@ -116,7 +117,7 @@ void loopReadSbusRx() {
 
     if ((uint32_t)(millis() - lastValidSbus) >= SBUS_TIMEOUT_MS) {
       timeoutFlgSbusRx = 1;
-      timeoutCntSbusRx = SERIAL_TIMEOUT;
+      // timeoutCntSbusRx = SERIAL_TIMEOUT;
     }
   }
 
@@ -167,12 +168,12 @@ void loopReadSbusRx() {
       leftStickX = 0;
       buttonD = 0;                            // Enable = 0;
       threePositionSwitchC = 1;               // Pozycja srodkowa
-      digitalWrite(safetyStopPin, LOW);       // Wyłączam zapłom
+      digitalWrite(SWITCH_2_IGNITION, LOW);       // Wyłączam zapłom
 
     } else {
       timeoutMsgfailsafe = 0;
       safetyStop = 0;
-      digitalWrite(safetyStopPin, HIGH);      // Włączam zapłom
+      digitalWrite(SWITCH_2_IGNITION, HIGH);      // Włączam zapłom
     }
 
 //----------------------KANAŁY Z ODBIORNIKA---------------------//
@@ -205,9 +206,9 @@ void loopReadSbusRx() {
   lowSpeedEngine = buttonB;
 //---------------------------------------------------------Kanał 9
   int buttonH = (data.ch[9] > 1000) ? 1 : 0;
-
+  activaiteClutch = buttonH;
 //---------------------------------------------------------Kanał 10
-  buttonD = (data.ch[10] > 1000) ? 1 : 0;
+  buttonD = (data.ch[10] > 1000) ? 1 : 0;                           // Enable Motor Wheels;
 //---------------------------------------------------------Kanał 11
   int potentiometerValueRight = scaleValue(data.ch[11], 306, 1694, 0, 180);
 

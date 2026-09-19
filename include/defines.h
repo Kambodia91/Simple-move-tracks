@@ -11,13 +11,11 @@
 
 
 //---------------------------Esp Setings----------------------------//
-#define SpeedRate               115200                              // Prędkość Serial.
 
-        // HAL Sensor signal in
-#define SENSOR_PIN              1                                   // Input pin.
-        // REALY signal out
-#define OUTPUT_PIN              16                                  // Output pin.
-
+#define SERIAL_RX_1             27                                  // [IN]    Serial 1 RX
+#define SERIAL_TX_1             26                                  // [OUT]   Serial 1 TX
+#define SERIAL_RX_2             16                                  // [IN]    Serial 2 RX
+#define SERIAL_TX_2             17                                  // [OUT]   Serial 2 TX
 
 #define ANALOG_IN_RES           12                                  // 12bit.
 #define PWM_FREQ                5000                                // 5000hz.
@@ -25,19 +23,20 @@
                            
 #define SERWO_THROTTLE          15
 
-#define HALL_PIN                12                                  // [IN] czujnik hall do pomiaru obrotow silnika spalinowego.
-#define safetyStopPin           25                                  // [OUT] Stycznik rozłącznik iskry.                         [3]
-#define SWITCH_3                33
-#define CHARGING_PIN            14                                  // [OUT] Stycznik Załączenie ładowania w Alternatorze.      [1]
-#define SWITCH_4                32
+#define HALL_PIN                12                                  // [IN]     czujnik hall do pomiaru obrotow silnika spalinowego.
+#define SWITCH_1_CHARGING_PIN   14                                  // [OUT]    Stycznik Załączenie ładowania w Alternatorze.           []
+#define SWITCH_2_IGNITION       25                                  // [OUT]    Stycznik rozłącznik iskry.                              []
+#define SWITCH_3                33                                  // [OUT]    Sterowanie siłownikiem podnoszenia biegun               [+]
+#define SWITCH_4                32                                  // [OUT]    Sterowanie siłownikiem podnoszenia biegun               [-]
+#define SWITCH_CLUTCH_PIN       22                                  // [OUT]    Stycznik Załączenie sprzęgła.                           []
 //-------------------------Send/Recived-Cmd-------------------------//
 
-#define HOVER_SERIAL_BAUD   115200                                  // [-] Baud rate for HoverSerial (used to communicate with the hoverboard)
-#define START_FRAME         0xABCD     	                            // [-] Start frme definition for reliable serial communication
-#define TIME_SEND           25                                      // [ms] Sending time interval
-#define SERIAL_TIMEOUT      784                                     // [cycle] Serial timeout duration for the received data. 784 ~= 0.8 sec. Calculate (98 cycle / 0,1 sec).
-#define SERIAL_TIMEOUT_MS   800                                     // [ms] Timeout for missing valid feedback frame
-#define SBUS_TIMEOUT_MS     200                                     // [ms] Timeout for missing SBUS frame
+#define HOVER_SERIAL_BAUD       115200                                  // [-] Baud rate for HoverSerial (used to communicate with the hoverboard)
+#define START_FRAME             0xABCD     	                            // [-] Start frme definition for reliable serial communication
+#define TIME_SEND               25                                      // [ms] Sending time interval
+// #define SERIAL_TIMEOUT          784                                     // [cycle] Serial timeout duration for the received data. 784 ~= 0.8 sec. Calculate (98 cycle / 0,1 sec).
+#define SERIAL_TIMEOUT_MS       800                                     // [ms] Timeout for missing valid feedback frame
+#define SBUS_TIMEOUT_MS         200                                     // [ms] Timeout for missing SBUS frame
 // #define PRINT_SERIAL_DATA
 // #define DEBUG_SERIAL1_RX              // [-] Debug received data. Prints all bytes to serial (comment-out to disable)
 // #define DEBUG_SERIAL2_RX              // [-] Debug received data. Prints all bytes to serial (comment-out to disable)
