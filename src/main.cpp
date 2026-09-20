@@ -62,7 +62,7 @@ void loop () {
   //---Blink Led---//
 timeNow = millis();
 
-uint8_t brightness = (sin(timeNow * 0.002) + 1.0) * 127.5;
+uint8_t brightness = (sin(timeNow * 0.004) + 1.0) * 127.5;
 analogWrite(LED_BUILTIN, brightness);
   // digitalWrite(25, (timeNow%2000)<1000);
   //---Blink Led---//
