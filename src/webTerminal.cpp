@@ -206,24 +206,23 @@ void loopWebTerminal() {
     StaticJsonDocument<512> doc;
 
     doc["type"] = "vars";
-    doc["rpm"] = rpmMower;
-    doc["current1Master"] = Feedback_Serial1.motor_dc_currMaster / 100.0;
-    doc["current1Slave"] = Feedback_Serial1.motor_dc_currSlave / 100.0;
-    doc["current2Master"] = Feedback_Serial2.motor_dc_currMaster / 100.0;
-    doc["current2Slave"] = Feedback_Serial2.motor_dc_currSlave / 100.0;
-    doc["temp"] = oilTemperature;
-    doc["voltage"] = Feedback_Serial1.batVoltage;
-    doc["volt"] = Feedback_Serial1.batVoltage;
-    doc["angle"] = angle;
-    doc["enable"] = buttonD;
-    doc["leftStickX"] = leftStickX;
-    doc["leftStickY"] = leftStickY;
+    doc["rpm"] =              rpmMower;
+    doc["current1Master"] =   Feedback_Serial1.motor_dc_currMaster / 100.0;
+    doc["current1Slave"] =    Feedback_Serial1.motor_dc_currSlave / 100.0;
+    doc["current2Master"] =   Feedback_Serial2.motor_dc_currMaster / 100.0;
+    doc["current2Slave"] =    Feedback_Serial2.motor_dc_currSlave / 100.0;
+    doc["temp"] =             oilTemperature;
+    doc["voltage"] =          Feedback_Serial1.batVoltage;
+    doc["angle"] =            angle;
+    doc["enable"] =           buttonD;
+    doc["leftStickX"] =       leftStickX;
+    doc["leftStickY"] =       leftStickY;
 
-    doc["speedL"] = speeds.leftSpeed;
-    doc["speedR"] = speeds.rightSpeed;
-    doc["sbusTimeout"] = timeoutFlgSbusRx;
-    doc["uart1Timeout"] = timeoutFlgSerial_1;
-    doc["uart2Timeout"] = timeoutFlgSerial_2;
+    doc["speedL"] =           speeds.leftSpeed;
+    doc["speedR"] =           speeds.rightSpeed;
+    doc["sbusTimeout"] =      timeoutFlgSbusRx;
+    doc["uart1Timeout"] =     timeoutFlgSerial_1;
+    doc["uart2Timeout"] =     timeoutFlgSerial_2;
 
     String json;
     serializeJson(doc, json);

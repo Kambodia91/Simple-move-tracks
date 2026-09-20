@@ -61,7 +61,7 @@ void loop () {
 
   //---Blink Led---//
   timeNow = millis();
-  digitalWrite(LED_BUILTIN, (timeNow%500)<250);
+  digitalWrite(LED_BUILTIN, (timeNow%100)<50);
   // digitalWrite(25, (timeNow%2000)<1000);
   //---Blink Led---//
  
