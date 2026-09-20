@@ -215,6 +215,7 @@ void loopReadSbusRx() {
   if (sbusSafetyActive) {
     leftStickX = 0;
     leftStickY = 0;
+    activaiteClutch = 0;
     buttonD = 0;
     threePositionSwitchC = 1;
   }

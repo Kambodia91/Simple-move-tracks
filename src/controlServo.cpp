@@ -52,23 +52,35 @@ bool lowSpeedEngine; // [8] Channel RC
 // Konfiguracja pinu i kanału PWM
 // int angle;                                                             // zmienna z pilota RC kanał 11
 void chokeLeverControl() {
+  const char* chokePosition;
+
   if (!lowSpeedEngine) {
     angle = SLOW;
+    chokePosition = "wolne obroty";
   } else {
     if (oilTemperature < TEMP_SSANIE_ON) {
       angle = CHOKE;
+      chokePosition = "ssanie wlaczone";
     } else if (oilTemperature >= TEMP_SSANIE_OFF) {
       angle = FAST;
+      chokePosition = "szybkie obroty";
     } else {
       // Płynne przejście ssania od CHOKE do FAST
       float ratio = (oilTemperature - TEMP_SSANIE_ON) / (TEMP_SSANIE_OFF - TEMP_SSANIE_ON);
       angle = map(ratio * 100, 0, 100, CHOKE, FAST);
+      chokePosition = "pozycja posrednia";
     }
+  }
+
+  static int lastReportedAngle = -1;
+  if (angle != lastReportedAngle) {
+    inf << "Servo: " << chokePosition << ", pozycja " << angle << " stopni." << endl;
+    lastReportedAngle = angle;
   }
 }
 
 //------------------------------------------------------------------------
-// procedures angel To Duty
+// procedures angle To Duty
 //------------------------------------------------------------------------ 
 // Funkcja konwertująca kąt (0–180°) na wartość PWM
 uint32_t angleToDuty(int angle) {
@@ -97,4 +109,4 @@ void loopControlServo() {
 
 //------------------------------------------------------------------------
 // end file
-//------------------------------------------------------------------------ 
+//------------------------------------------------------------------------

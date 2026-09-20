@@ -19,6 +19,14 @@
 
 #include <WiFi.h>
 #include <WebServer.h>
+
+// A client that disappears from Wi-Fi may remain TCP-connected until its
+// socket times out.  Keep each failed write short so the control loop is not
+// held up by that stale connection.
+#ifndef WEBSOCKETS_TCP_TIMEOUT
+#define WEBSOCKETS_TCP_TIMEOUT 20
+#endif
+
 #include <WebSocketsServer.h>
 #include <ArduinoJson.h>
 
@@ -58,7 +66,9 @@ size_t WebTerminal::write(uint8_t c) {
 
       String json;
       serializeJson(doc, json);
-      webSocket.broadcastTXT(json);
+      if (webSocket.connectedClients() > 0) {
+        webSocket.broadcastTXT(json);
+      }
       buffer = "";
     }
   }
@@ -82,6 +92,9 @@ void setupWebTerminal() {
 
   // WebSocket server
   webSocket.begin();
+  // Remove clients that vanish from Wi-Fi without sending a WebSocket close
+  // frame. This prevents subsequent broadcasts from targeting stale sockets.
+  webSocket.enableHeartbeat(1000, 250, 2);
   webSocket.onEvent([](uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
 
   if (type == WStype_CONNECTED) {
@@ -205,6 +218,8 @@ void loopWebTerminal() {
     doc["volt"] = Feedback_Serial1.batVoltage;
     doc["angle"] = angle;
     doc["enable"] = buttonD;
+    doc["leftStickX"] = leftStickX;
+    doc["leftStickY"] = leftStickY;
 
     doc["speedL"] = speeds.leftSpeed;
     doc["speedR"] = speeds.rightSpeed;
@@ -215,6 +230,8 @@ void loopWebTerminal() {
     String json;
     serializeJson(doc, json);
 
-    webSocket.broadcastTXT(json);
+    if (webSocket.connectedClients() > 0) {
+      webSocket.broadcastTXT(json);
+    }
   }
 }

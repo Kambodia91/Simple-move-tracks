@@ -229,6 +229,8 @@ ws.onmessage = function(event)
             document.getElementById("current2Master").innerText = json.current2Master;
             document.getElementById("current2Slave").innerText = json.current2Slave;
             document.getElementById("enable").innerText = json.enable;
+            document.getElementById("leftStickX").innerText = json.leftStickX;
+            document.getElementById("leftStickY").innerText = json.leftStickY;
 
             setLedState("sbusLed", !!json.sbusTimeout);
             setLedState("uart1Led", !!json.uart1Timeout);
