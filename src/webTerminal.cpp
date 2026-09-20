@@ -44,8 +44,6 @@ const char* terminalLogo = R"rawliteral(
 )rawliteral";
 
 extern uint8_t timeoutFlgSbusRx;
-extern uint8_t timeoutFlgSerial_1;
-extern uint8_t timeoutFlgSerial_2;
 
 size_t WebTerminal::write(uint8_t c) {
 
@@ -205,7 +203,7 @@ void loopWebTerminal() {
 
     lastRpmSent = now;
 
-    StaticJsonDocument<256> doc;
+    StaticJsonDocument<512> doc;
 
     doc["type"] = "vars";
     doc["rpm"] = rpmMower;

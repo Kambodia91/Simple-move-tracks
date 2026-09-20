@@ -47,6 +47,9 @@ extern SerialFeedback Feedback_Serial1,
                       Feedback_Serial2,
                       NewFeedback_Serial2;
 
+extern bool timeoutFlgSerial_1;
+extern bool timeoutFlgSerial_2;
+
 //------------------------------------------------------------------------
 // procedures
 //------------------------------------------------------------------------ 

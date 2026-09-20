@@ -58,13 +58,10 @@ byte incomingBytePrev_Serial2;
 bool serial1Blynk;
 bool serial2Blynk;
 
-uint16_t  timeoutCntSerial_2 = 0;               // Timeout counter for Rx Serial command
-uint8_t   timeoutFlgSerial_2 = 0;               // Timeout Flag for Rx Serial command: 0 = OK, 1 = Problem detected (line disconnected or wrong Rx data)
-bool      timeoutMsgSerial_2 = 0;
-
-uint16_t  timeoutCntSerial_1 = 0;               // Timeout counter for Rx Serial command
-uint8_t   timeoutFlgSerial_1 = 0;               // Timeout Flag for Rx Serial command: 0 = OK, 1 = Problem detected (line disconnected or wrong Rx data)
-bool      timeoutMsgSerial_1 = 0;
+bool timeoutFlgSerial_1 = false;                // Brak poprawnej ramki zwrotnej przez SERIAL_TIMEOUT_MS.
+bool timeoutFlgSerial_2 = false;                // Brak poprawnej ramki zwrotnej przez SERIAL_TIMEOUT_MS.
+bool timeoutMsgSerial_1 = false;
+bool timeoutMsgSerial_2 = false;
 uint32_t lastValidSerial1 = 0;
 uint32_t lastValidSerial2 = 0;
 uint16_t    dirLeft = 0;
@@ -165,22 +162,16 @@ void Receive_serial_1()
                             incomingBytePrev_Serial1)) {
       memcpy(&Feedback_Serial1, &NewFeedback_Serial1, sizeof(SerialFeedback));
       lastValidSerial1 = millis();
-      timeoutCntSerial_1 = 0;
-      timeoutFlgSerial_1 = 0;
-      timeoutMsgSerial_1 = 0;
     }
   }
 
-  if ((uint32_t)(millis() - lastValidSerial1) >= SERIAL_TIMEOUT_MS) {
-    timeoutFlgSerial_1 = 1;
-    timeoutCntSerial_1 = SERIAL_TIMEOUT;
-  }
+  timeoutFlgSerial_1 = (uint32_t)(millis() - lastValidSerial1) >= SERIAL_TIMEOUT_MS;
 
-  if (timeoutFlgSerial_1 == 1) {
-    if (!timeoutMsgSerial_1) {
+  if (timeoutFlgSerial_1 && !timeoutMsgSerial_1) {
     inf << "Serial1 RX no connection to the inventer feedback." <<  endl;
     timeoutMsgSerial_1 = 1;
-    }
+  } else if (!timeoutFlgSerial_1) {
+    timeoutMsgSerial_1 = false;
   }
 }
 
@@ -194,22 +185,16 @@ void Receive_serial_2()
                             incomingBytePrev_Serial2)) {
       memcpy(&Feedback_Serial2, &NewFeedback_Serial2, sizeof(SerialFeedback));
       lastValidSerial2 = millis();
-      timeoutCntSerial_2 = 0;
-      timeoutFlgSerial_2 = 0;
-      timeoutMsgSerial_2 = 0;
     }
   }
 
-  if ((uint32_t)(millis() - lastValidSerial2) >= SERIAL_TIMEOUT_MS) {
-    timeoutFlgSerial_2 = 1;
-    timeoutCntSerial_2 = SERIAL_TIMEOUT;
-  }
+  timeoutFlgSerial_2 = (uint32_t)(millis() - lastValidSerial2) >= SERIAL_TIMEOUT_MS;
 
-  if (timeoutFlgSerial_2 == 1) {
-    if (!timeoutMsgSerial_2) {
+  if (timeoutFlgSerial_2 && !timeoutMsgSerial_2) {
     inf << "Serial2 RX no connection to the inventer feedback ." <<  endl;
     timeoutMsgSerial_2 = 1;
-    }
+  } else if (!timeoutFlgSerial_2) {
+    timeoutMsgSerial_2 = false;
   }
 }
 
@@ -245,10 +230,6 @@ void loopSendCmd() {
 //   loop_counter = 0;
   }
 
-// if (timeoutFlgSerial_2 && (loop_counter % 1000 == 0)) {
-//       Feedback_Serial2.cmdLed ^= LED3_SET;
-//       //Feedback_Serial2.cmdLed &= ~LED1_SET & ~LED2_SET & ~LED4_SET & ~LED5_SET;
-//     }
 // Receive commands
 Receive_serial_1();
 Receive_serial_2();
@@ -259,4 +240,4 @@ loop_counter++;
 
 //------------------------------------------------------------------------
 // end file
-//------------------------------------------------------------------------ 
+//------------------------------------------------------------------------
