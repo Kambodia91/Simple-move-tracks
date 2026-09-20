@@ -16,8 +16,8 @@ Prad silnik 1 slave: <span id="current1Slave">0</span> A<br>
 Prad silnik 2 master: <span id="current2Master">0</span> A<br>
 Prad silnik 2 slave: <span id="current2Slave">0</span> A<br>
 Gotowosc silnikow: <span id="enable">0</span><br>
-Lewy drążek X: <span id="leftStickX">0</span><br>
-Lewy drążek Y: <span id="leftStickY">0</span><br>
+Lewo/Prawo X: <span id="leftStickX">0</span><br>
+Przod/Tyl  Y: <span id="leftStickY">0</span><br>
 
 <div class="status-row">
   <div class="status-item">
