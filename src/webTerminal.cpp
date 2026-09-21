@@ -142,12 +142,12 @@ void setupWebTerminal() {
     if (cmd == "pinInfo") {
         String response = "Project pin usage\n";
         response += "LED_BUILTIN=" + String(LED_BUILTIN) + " (status LED)\n";
-        response += "SERWO_THROTTLE=" + String(SERWO_THROTTLE) + " (servo throttle)\n";
+        response += "SERWO_THROTTLE=" + String(SERWO_THROTTLE_PIN) + " (servo throttle)\n";
         response += "HALL_PIN=" + String(HALL_PIN) + " (tachometer hall input)\n";
-        response += "SWITCH_2_IGNITION=" + String(SWITCH_2_IGNITION) + " (safety stop relay/output)\n";
-        response += "SWITCH_3=" + String(SWITCH_3) + " (switch output)\n";
+        response += "SWITCH_2_IGNITION=" + String(SWITCH_2_IGNITION_PIN) + " (safety stop relay/output)\n";
+        response += "SWITCH_3=" + String(SWITCH_3_PIN) + " (switch output)\n";
         response += "SWITCH_1_CHARGING_PIN=" + String(SWITCH_1_CHARGING_PIN) + " (charging relay/output)\n";
-        response += "SWITCH_4=" + String(SWITCH_4) + " (switch output)\n";
+        response += "SWITCH_4=" + String(SWITCH_4_PIN) + " (switch output)\n";
         response += "Serial1 RX/TX = 27/26\n";
         response += "Serial2 RX/TX = 16/17\n";
         response += "SBUS RX = Serial (GPIO3, configured by sbus_rx)\n";
