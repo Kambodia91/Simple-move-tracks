@@ -28,7 +28,7 @@
 // objects
 //------------------------------------------------------------------------ 
 /* SBUS object, reading SBUS */
-bfs::SbusRx sbus_rx(&Serial, 3, 1, false);
+bfs::SbusRx sbus_rx(&Serial, 35, 1, false);
 
 /* SBUS data */
 bfs::SbusData data;

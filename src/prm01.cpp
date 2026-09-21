@@ -165,7 +165,7 @@ void onRequest() {
 // procedures setup Prm01
 //------------------------------------------------------------------------ 
 void setupPrm01() {
-  Wire.begin(4, 23, 19, 400);
+  Wire.begin(4, SDA_PIN, SCL_PIN, 400);
   Wire.onRequest(onRequest);
 }
 

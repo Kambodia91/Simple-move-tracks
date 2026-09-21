@@ -17,13 +17,16 @@
 #define SERIAL_RX_2             16                                  // [IN]    Serial 2 RX
 #define SERIAL_TX_2             17                                  // [OUT]   Serial 2 TX
 
+#define SDA_PIN                 21                                  // [IN]     I2C SDA
+#define SCL_PIN                 22                                  // [IN]     I2C SCL
+
 #define ANALOG_IN_RES           12                                  // 12bit.
 #define PWM_FREQ                5000                                // 5000hz.
 #define PWM_RES                 10                                  // 10bit.
                            
 #define SERWO_THROTTLE          15
 
-#define HALL_PIN                12                                  // [IN]     czujnik hall do pomiaru obrotow silnika spalinowego.
+#define HALL_PIN                34                                  // [IN]     czujnik hall do pomiaru obrotow silnika spalinowego.
 #define SWITCH_1_CHARGING_PIN   14                                  // [OUT]    Stycznik Załączenie ładowania w Alternatorze.           []
 #define SWITCH_2_IGNITION       25                                  // [OUT]    Stycznik rozłącznik iskry.                              []
 #define SWITCH_3                33                                  // [OUT]    Sterowanie siłownikiem podnoszenia biegun               [+]
