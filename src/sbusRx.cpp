@@ -28,7 +28,7 @@
 // objects
 //------------------------------------------------------------------------ 
 /* SBUS object, reading SBUS */
-bfs::SbusRx sbus_rx(&Serial, 35, 1, false);
+bfs::SbusRx sbus_rx(&Serial, SBUS_RX_PIN, 1, false);
 
 /* SBUS data */
 bfs::SbusData data;
@@ -168,12 +168,12 @@ void loopReadSbusRx() {
       leftStickX = 0;
       buttonD = 0;                            // Enable = 0;
       threePositionSwitchC = 1;               // Pozycja srodkowa
-      digitalWrite(SWITCH_2_IGNITION, LOW);       // Wyłączam zapłom
+      digitalWrite(SWITCH_2_IGNITION_PIN, LOW);       // Wyłączam zapłom
 
     } else {
       timeoutMsgfailsafe = 0;
       safetyStop = 0;
-      digitalWrite(SWITCH_2_IGNITION, HIGH);      // Włączam zapłom
+      digitalWrite(SWITCH_2_IGNITION_PIN, HIGH);      // Włączam zapłom
     }
 
 //----------------------KANAŁY Z ODBIORNIKA---------------------//

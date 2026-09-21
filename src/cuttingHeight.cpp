@@ -37,10 +37,10 @@
 // procedures setup Cutting Height
 //------------------------------------------------------------------------ 
 void setupCuttingHeight() {
-    pinMode(SWITCH_3, OUTPUT);
-    pinMode(SWITCH_4, OUTPUT);
-    digitalWrite(SWITCH_3, LOW);
-    digitalWrite(SWITCH_4, LOW);
+    pinMode(SWITCH_3_PIN, OUTPUT);
+    pinMode(SWITCH_4_PIN, OUTPUT);
+    digitalWrite(SWITCH_3_PIN, LOW);
+    digitalWrite(SWITCH_4_PIN, LOW);
 }
 
 //------------------------------------------------------------------------
@@ -50,16 +50,16 @@ void loopCuttingHeight() {
 switch (threePositionSwitchC)
 {
 case 0:
-    digitalWrite(SWITCH_3, HIGH);
-    digitalWrite(SWITCH_4, LOW);
+    digitalWrite(SWITCH_3_PIN, HIGH);
+    digitalWrite(SWITCH_4_PIN, LOW);
     break;
 case 1:
-    digitalWrite(SWITCH_3, LOW);
-    digitalWrite(SWITCH_4, LOW);
+    digitalWrite(SWITCH_3_PIN, LOW);
+    digitalWrite(SWITCH_4_PIN, LOW);
     break;
 case 2:
-    digitalWrite(SWITCH_3, LOW);
-    digitalWrite(SWITCH_4, HIGH);
+    digitalWrite(SWITCH_3_PIN, LOW);
+    digitalWrite(SWITCH_4_PIN, HIGH);
     break;
 default:
     break;

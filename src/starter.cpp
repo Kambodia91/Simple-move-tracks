@@ -141,7 +141,7 @@ void Tachometer::calculateRPM(unsigned long interval) {
 //------------------------------------------------------------------------ 
 void setupStarter(){
     tachometer.begin();
-    pinMode(SWITCH_2_IGNITION, OUTPUT);
+    pinMode(SWITCH_2_IGNITION_PIN, OUTPUT);
   }
 
 //------------------------------------------------------------------------

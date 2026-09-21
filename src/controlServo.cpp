@@ -26,7 +26,7 @@
 //------------------------------------------------------------------------
 // variables const
 //------------------------------------------------------------------------ 
-const int servoPin = 18;        // dowolny pin obsługujący PWM (np. 18)
+//const int servoPin = 18;        // dowolny pin obsługujący PWM (np. 18)
 const int pwmChannel = 0;       // kanał PWM (od 0 do 15)
 const int pwmFreq = 50;         // 50 Hz dla serwa
 const int pwmResolution = 16;   // rozdzielczość 16-bitowa (0–65535)
@@ -96,7 +96,7 @@ uint32_t angleToDuty(int angle) {
 void setupControlServo() {
   // Konfiguracja sprzętowego PWM (LEDC)
   ledcSetup(pwmChannel, pwmFreq, pwmResolution);
-  ledcAttachPin(servoPin, pwmChannel);
+  ledcAttachPin(SERWO_THROTTLE_PIN, pwmChannel);
 }
 
 //------------------------------------------------------------------------

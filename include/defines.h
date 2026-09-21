@@ -19,19 +19,23 @@
 
 #define SDA_PIN                 21                                  // [IN]     I2C SDA
 #define SCL_PIN                 22                                  // [IN]     I2C SCL
+#define SBUS_RX_PIN             35                                  // [IN]     Sbus RX
 
-#define ANALOG_IN_RES           12                                  // 12bit.
-#define PWM_FREQ                5000                                // 5000hz.
-#define PWM_RES                 10                                  // 10bit.
+// #define ANALOG_IN_RES           12                                  // 12bit.
+// #define PWM_FREQ                5000                                // 5000hz.
+// #define PWM_RES                 10                                  // 10bit.
                            
-#define SERWO_THROTTLE          15
+#define SERWO_THROTTLE_PIN      18                                  // [OUT]    Serwo sterujące przepustnicą silnika spalinowego.      [+]
 
 #define HALL_PIN                34                                  // [IN]     czujnik hall do pomiaru obrotow silnika spalinowego.
+#define ONE_WIRE_BUS_PIN        5                                   // [IN]     One Wire Bus Pin
+
 #define SWITCH_1_CHARGING_PIN   14                                  // [OUT]    Stycznik Załączenie ładowania w Alternatorze.           []
-#define SWITCH_2_IGNITION       25                                  // [OUT]    Stycznik rozłącznik iskry.                              []
-#define SWITCH_3                33                                  // [OUT]    Sterowanie siłownikiem podnoszenia biegun               [+]
-#define SWITCH_4                32                                  // [OUT]    Sterowanie siłownikiem podnoszenia biegun               [-]
-#define SWITCH_CLUTCH_PIN       22                                  // [OUT]    Stycznik Załączenie sprzęgła.                           []
+#define SWITCH_2_IGNITION_PIN   25                                  // [OUT]    Stycznik rozłącznik iskry.                              []
+#define SWITCH_3_PIN            33                                  // [OUT]    Sterowanie siłownikiem podnoszenia biegun               [+]
+#define SWITCH_4_PIN            32                                  // [OUT]    Sterowanie siłownikiem podnoszenia biegun               [-]
+
+#define SWITCH_CLUTCH_PIN       23                                  // [OUT]    Stycznik Załączenie sprzęgła.                           []
 //-------------------------Send/Recived-Cmd-------------------------//
 
 #define HOVER_SERIAL_BAUD       115200                                  // [-] Baud rate for HoverSerial (used to communicate with the hoverboard)
