@@ -134,12 +134,12 @@ uint8_t DayOfWeakNumber;
 // procedures serial setup
 //------------------------------------------------------------------------ 
 void SerialSetup() {
-  //Serial.begin(SpeedRate);
-  //Serial.println("Setup Serial Begin.");
+  // Serial.begin(SPEED_SERIAL_0);
+  // Serial.println("Setup Serial Begin.");
   delay(100);
   logger.add(webTerminal, LOG_LEVEL_INFO, true); // This will log everything on Serial
   logger.add(Serial, LOG_LEVEL_INFO, true); // This will log everything on Serial
-  //logger.disableLevelName(Terminal);
+  // logger.disableLevelName(Terminal);
 }
 
 //------------------------------------------------------------------------

@@ -12,6 +12,8 @@
 
 //---------------------------Esp Setings----------------------------//
 
+#define SPEED_SERIAL_0          100000                              // [bps]   Serial 0 Speed
+
 #define SERIAL_RX_1             27                                  // [IN]    Serial 1 RX
 #define SERIAL_TX_1             26                                  // [OUT]   Serial 1 TX
 #define SERIAL_RX_2             16                                  // [IN]    Serial 2 RX

@@ -23,8 +23,8 @@ struct STREAM_DATA {
   float pitch = 0;
   float yaw = 0;
   uint8_t gps_sats = 0;
-  float gps_lon = 123.456789;
-  float gps_lat = -123.456789;
+  float gps_lon = 0;
+  float gps_lat = 0;
   float home_lon = 0;
   float home_lat = 0;
   uint16_t gps_speed = 0;
