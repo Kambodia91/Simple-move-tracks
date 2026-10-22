@@ -121,7 +121,7 @@ void setupWebTerminal() {
     if (cmd == "sBus") {
         String response = "SBUS RC status\n";
         response += "timeoutFlgSbusRx=" + String(timeoutFlgSbusRx) + "\n";
-        response += "leftStickX=" + String(leftStickX) + "\n";
+        response += "rightStickX=" + String(rightStickX) + "\n";
         response += "leftStickY=" + String(leftStickY) + "\n";
         response += "threePositionSwitchC=" + String(threePositionSwitchC) + "\n";
         response += "potentiometerValueA=" + String(potentiometerValueA) + "\n";
@@ -215,11 +215,40 @@ void loopWebTerminal() {
     doc["voltage"] =          Feedback_Serial1.batVoltage;
     doc["angle"] =            angle;
     doc["enable"] =           buttonD;
-    doc["leftStickX"] =       leftStickX;
+    doc["rightStickX"] =      rightStickX;
     doc["leftStickY"] =       leftStickY;
+    doc["potentiometerValueA"] = potentiometerValueA;
+    doc["potentiometerValueB"] = potentiometerValueB;
+    doc["potentiometerValueC"] = potentiometerValueC;
 
-    doc["speedL"] =           speeds.leftSpeed;
-    doc["speedR"] =           speeds.rightSpeed;
+    // Speed mode commands and master motor feedback are in motor RPM.
+    // Keep raw signs so the two master feedback directions can be compared.
+    const float gearRatio = 93.0f / 21.0f;
+    const float wheelCircumferenceM = 3.14159265f * 0.310f;
+    const float motorRpmToKmh = (wheelCircumferenceM * 0.06f) / gearRatio;
+    const float targetMasterRpm = speeds.masterSpeed;
+    const float targetSlaveRpm = speeds.slaveSpeed;
+    const float actualMaster1Rpm = Feedback_Serial1.speedMaster_meas;
+    const float actualMaster2Rpm = Feedback_Serial2.speedMaster_meas;
+    const float targetAverageRpm = (targetMasterRpm + targetSlaveRpm) / 2.0f;
+    // Master 1 reports the opposite sign to Master 2 during forward travel.
+    const float actualAverageRpm = (-actualMaster1Rpm + actualMaster2Rpm) / 2.0f;
+
+    doc["targetMasterRpm"] = targetMasterRpm;
+    doc["targetSlaveRpm"] = targetSlaveRpm;
+    doc["targetMasterKmh"] = targetMasterRpm * motorRpmToKmh;
+    doc["targetSlaveKmh"] = targetSlaveRpm * motorRpmToKmh;
+    doc["targetAverageRpm"] = targetAverageRpm;
+    doc["targetAverageKmh"] = targetAverageRpm * motorRpmToKmh;
+    doc["actualMaster1Rpm"] = actualMaster1Rpm;
+    doc["actualMaster2Rpm"] = actualMaster2Rpm;
+    doc["actualMaster1Kmh"] = actualMaster1Rpm * motorRpmToKmh;
+    doc["actualMaster2Kmh"] = actualMaster2Rpm * motorRpmToKmh;
+    doc["actualAverageRpm"] = actualAverageRpm;
+    doc["actualAverageKmh"] = actualAverageRpm * motorRpmToKmh;
+
+    doc["speedMaster"] =      speeds.masterSpeed;
+    doc["speedSlave"] =       speeds.slaveSpeed;
     doc["sbusTimeout"] =      timeoutFlgSbusRx;
     doc["uart1Timeout"] =     timeoutFlgSerial_1;
     doc["uart2Timeout"] =     timeoutFlgSerial_2;

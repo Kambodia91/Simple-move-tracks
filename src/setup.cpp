@@ -82,9 +82,6 @@ extern bool serial2Blynk;
 // extern int BLYNK_PID_KI;
 // extern int BLYNK_PID_KD;
 
-extern int axisValueX;
-extern int axisValueY;
-
 extern uint8_t test;
 extern uint8_t enable_off;
 
@@ -125,8 +122,6 @@ uint8_t RealSecond;
 String DayOfWeak;
 uint8_t DayOfWeakNumber;
 
-// uint16_t OutputLewa;
-// uint16_t OutputPrawa;
 
 // float rpmMower;
 

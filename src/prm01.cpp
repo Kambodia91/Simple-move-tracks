@@ -108,7 +108,7 @@ void set2() {
   byte buffer[16] = {
     0x89, 0xCD, 
     streamData.gps_sats, 
-    riseHi, riseLo, 
+    riseHi, riseLo,
     voltesHi, voltesLo,
     latHHi, latHi, latLo , latLLi, 
     lonHHi, lonHi, lonLo , lonLLi,
@@ -123,18 +123,18 @@ set=3;
 // procedures set3
 //------------------------------------------------------------------------
 void set3(){
-  byte buffer[16] = {
+   byte buffer[16] = {
     0x89, 0xEF, 
-    0x0, 
-    0x0, 0x0, 
-    0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0,
-    0x0, 0x0, 0x0, 0x0,
+    0x00, 
+    0x00, 0x00, 
+    0x00, 0x00,
+    0x00, 0x00, 0x00 , 0x00, 
+    0x00, 0x00, 0x00 , 0x00,
     0x00
   };
-    
+
 Wire.write(buffer, 16);
-set=1;
+  set=1;
 }
 
 //------------------------------------------------------------------------
@@ -145,7 +145,7 @@ void onRequest() {
    case 1:
     set1();
     //Serial.println("set1 ok");
-    streamData.gps_lon = streamData.gps_lon + 1;
+    streamData.gps_lon = streamData.gps_lon + 0.000001;
     break;
     case 2:
     set2();

@@ -229,8 +229,23 @@ ws.onmessage = function(event)
             document.getElementById("current2Master").innerText = json.current2Master;
             document.getElementById("current2Slave").innerText = json.current2Slave;
             document.getElementById("enable").innerText = json.enable;
-            document.getElementById("leftStickX").innerText = json.leftStickX;
+            document.getElementById("rightStickX").innerText = json.rightStickX;
             document.getElementById("leftStickY").innerText = json.leftStickY;
+            document.getElementById("potentiometerValueA").innerText = json.potentiometerValueA;
+            document.getElementById("potentiometerValueB").innerText = json.potentiometerValueB;
+            document.getElementById("potentiometerValueC").innerText = json.potentiometerValueC;
+            document.getElementById("targetMasterRpm").innerText = json.targetMasterRpm.toFixed(0);
+            document.getElementById("targetSlaveRpm").innerText = json.targetSlaveRpm.toFixed(0);
+            document.getElementById("targetMasterKmh").innerText = json.targetMasterKmh.toFixed(2);
+            document.getElementById("targetSlaveKmh").innerText = json.targetSlaveKmh.toFixed(2);
+            document.getElementById("targetAverageRpm").innerText = json.targetAverageRpm.toFixed(0);
+            document.getElementById("targetAverageKmh").innerText = json.targetAverageKmh.toFixed(2);
+            document.getElementById("actualMaster1Rpm").innerText = json.actualMaster1Rpm.toFixed(0);
+            document.getElementById("actualMaster2Rpm").innerText = json.actualMaster2Rpm.toFixed(0);
+            document.getElementById("actualMaster1Kmh").innerText = json.actualMaster1Kmh.toFixed(2);
+            document.getElementById("actualMaster2Kmh").innerText = json.actualMaster2Kmh.toFixed(2);
+            document.getElementById("actualAverageRpm").innerText = json.actualAverageRpm.toFixed(0);
+            document.getElementById("actualAverageKmh").innerText = json.actualAverageKmh.toFixed(2);
 
             setLedState("sbusLed", !!json.sbusTimeout);
             setLedState("uart1Led", !!json.uart1Timeout);

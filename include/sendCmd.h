@@ -14,8 +14,8 @@ typedef struct{
    uint16_t start;
    int16_t  enableMotors;
    int16_t  controlMode;
-   int16_t  speedLeft;
-   int16_t  speedRight;
+   int16_t  speedMaster;
+   int16_t  speedSlave;
    uint16_t checksum;
 } SerialCommand;
 
@@ -24,8 +24,8 @@ typedef struct{
    uint16_t start;
    int16_t  cmd1;
    int16_t  cmd2;
-   int16_t  speedR_meas;
-   int16_t  speedL_meas;
+   int16_t  speedMaster_meas;
+   int16_t  speedSlave_meas;
    int16_t  batVoltage;
    int16_t  boardTempMaster;
    int16_t  boardTempSlave;

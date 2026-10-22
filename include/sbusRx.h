@@ -11,11 +11,12 @@
 //------------------------------------------------------------------------
 // external variables 
 //------------------------------------------------------------------------
-extern int16_t leftStickX;    //
+extern int16_t rightStickX;    //
 extern int16_t leftStickY;    //
 extern int threePositionSwitchC;
 extern int buttonD;
 extern int potentiometerValueA;
+extern int potentiometerValueB;
 extern int potentiometerValueC;
 extern bool safetyStop;
 

@@ -8,18 +8,13 @@
 //------------------------------------------------------------------------
 // external variables 
 //------------------------------------------------------------------------
-extern uint16_t OutputLewa;     
-extern uint16_t OutputPrawa;
-
-extern bool enable_1;
-extern bool enable_2;
 
 //------------------------------------------------------------------------
 // struct
 //------------------------------------------------------------------------ 
 typedef struct { 
-        int leftSpeed;
-        int rightSpeed;
+        int masterSpeed;
+        int slaveSpeed;
     }   TrackSpeeds;
 
 //------------------------------------------------------------------------
@@ -31,7 +26,7 @@ extern TrackSpeeds speeds;
 // procedures
 //------------------------------------------------------------------------ 
 void loopTracks();
-void moveTracks(int leftStick, int rightStick);
+void moveTracks(int stick_Y, int stick_X);
 #endif
 
 //------------------------------------------------------------------------

@@ -17,8 +17,19 @@ Prad silnik 1 slave: <span id="current1Slave">0</span> A<br>
 Prad silnik 2 master: <span id="current2Master">0</span> A<br>
 Prad silnik 2 slave: <span id="current2Slave">0</span> A<br>
 Gotowosc silnikow: <span id="enable">0</span><br>
-Lewo/Prawo X: <span id="leftStickX">0</span><br>
+Lewo/Prawo X: <span id="rightStickX">0</span><br>
 Przod/Tyl  Y: <span id="leftStickY">0</span><br>
+Potencjometr A: <span id="potentiometerValueA">0</span><br>
+Potencjometr B: <span id="potentiometerValueB">0</span><br>
+Potencjometr C: <span id="potentiometerValueC">0</span><br>
+<h4>Prędkość zadana</h4>
+Master: <span id="targetMasterRpm">0</span> RPM (<span id="targetMasterKmh">0</span> km/h)<br>
+Slave: <span id="targetSlaveRpm">0</span> RPM (<span id="targetSlaveKmh">0</span> km/h)<br>
+Średnia: <span id="targetAverageRpm">0</span> RPM (<span id="targetAverageKmh">0</span> km/h)<br>
+<h4>Prędkość rzeczywista — koła Master</h4>
+Master 1: <span id="actualMaster1Rpm">0</span> RPM (<span id="actualMaster1Kmh">0</span> km/h)<br>
+Master 2: <span id="actualMaster2Rpm">0</span> RPM (<span id="actualMaster2Kmh">0</span> km/h)<br>
+Średnia prędkość kosiarki: <span id="actualAverageRpm">0</span> RPM (<span id="actualAverageKmh">0</span> km/h)<br>
 
 <div class="status-row">
   <div class="status-item">

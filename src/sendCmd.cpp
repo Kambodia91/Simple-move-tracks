@@ -42,8 +42,6 @@ unsigned long iTimeSend = 0;
 byte controlMode_Blynk = 0;                     // from blynk | 0 = OPEN_Mode | 1 = FOC_Voltege | 2 = FOC_Speed | 3 = FOC_Torque | 4 = SIN_CTRL | 5 = COMM_CTRL |
 // uint8_t test;
 // uint8_t movement;
-// bool enable_1 = 0;                         // from moweTrack
-// bool enable_2 = 0;                         // from moweTrack
 
 uint8_t idx_Serial1 = 0;                        // Index for new data pointer
 byte *p_Serial1;                                // Pointer declaration for the new received data
@@ -70,7 +68,7 @@ uint16_t    dirRight = 1;
 //------------------------------------------------------------------------
 // sending procedure
 //------------------------------------------------------------------------ 
-void sendSerial(int8_t serialPort, int16_t uEnableMotors, int16_t uControlMode, int16_t uSpeedLeft, int16_t uSpeedRight) {
+void sendSerial(int8_t serialPort, int16_t uEnableMotors, int16_t uControlMode, int16_t uSpeedMaster, int16_t uSpeedSlave) {
   
   HardwareSerial* serial;
     
@@ -94,15 +92,15 @@ void sendSerial(int8_t serialPort, int16_t uEnableMotors, int16_t uControlMode, 
   Command.start           = (uint16_t)START_FRAME;    // Start Frame  
   Command.enableMotors    = (int16_t)uEnableMotors;   // Enable Motors
   Command.controlMode     = (int16_t)uControlMode;    // Enable Motors
-  Command.speedLeft       = (int16_t)uSpeedLeft;      // Speed Left
-  Command.speedRight      = (int16_t)uSpeedRight;     // Speed Right
+  Command.speedMaster     = (int16_t)uSpeedMaster;    // Master wheel speed
+  Command.speedSlave      = (int16_t)uSpeedSlave;     // Slave wheel speed
   Command.checksum        = (uint16_t)( Command.start ^ 
                                         Command.enableMotors ^ 
                                         Command.controlMode ^ 
-                                        Command.speedLeft ^ 
-                                        Command.speedRight);
+                                        Command.speedMaster ^ 
+                                        Command.speedSlave);
   #ifdef PRINT_SERIAL_DATA
-  //inf << Command.start << " , " << Command.enableMotors << " , " << Command.controlMode  << " , " << Command.speedLeft << " , " << Command.speedRight << " , " << Command.checksum << " , " << serialPort << endl;
+  //inf << Command.start << " , " << Command.enableMotors << " , " << Command.controlMode  << " , " << Command.speedMaster << " , " << Command.speedSlave << " , " << Command.checksum << " , " << serialPort << endl;
   #endif
   // Write to Serial
   serial->write((uint8_t *) &Command, sizeof(Command)); 
@@ -137,8 +135,8 @@ static bool processFeedbackByte(byte incomingByte, SerialFeedback& frame,
   uint16_t checksum = (uint16_t)(frame.start ^
                                  frame.cmd1 ^
                                  frame.cmd2 ^
-                                 frame.speedR_meas ^
-                                 frame.speedL_meas ^
+                                 frame.speedMaster_meas ^
+                                 frame.speedSlave_meas ^
                                  frame.batVoltage ^
                                  frame.boardTempMaster ^
                                  frame.boardTempSlave ^
@@ -218,11 +216,11 @@ void loopSendCmd() {
   unsigned long timeNow = millis();                                                     //  Serial_1 Control/FeedBack //
   if (timeNow - iTimeSend >= TIME_SEND) {                                               //  Serial_2         FeedBack //
     iTimeSend = timeNow;                                                                //        ╔═════════╗         //
-    // Uart1,     ENNABLE,   MODE,       LEFT SPEED,       RIGHT SPEED                  //   LP ╠═╣    ↑    ╠═╣  PP   //
-    sendSerial(1, buttonD, 2, speeds.leftSpeed, speeds.rightSpeed);                     // MASTER ║    ↑    ║  MASTER //
+    // Uart1,     ENABLE,    MODE,       MASTER SPEED,     SLAVE SPEED                  //   LP ╠═╣    ↑    ╠═╣  PP   //
+    sendSerial(1, buttonD, 2, speeds.masterSpeed, speeds.slaveSpeed); // Master speed, Slave speed
     //                                                                                  //        ║    ↑    ║         //
     // Uart2 //                                                                         //        ║    ↑    ║         //
-    // sendSerial(2, buttonD, 2, -speeds.rightSpeed, speeds.rightSpeed);                //   LT ╠═╣    ↑    ╠═╣  PT   //
+    // sendSerial(2, buttonD, 2, -speeds.slaveSpeed, speeds.slaveSpeed); // MASTER arg, SLAVE arg
     //                                         LP                LT                     //  SLAVE ╚═════════╝   SLAVE //
   //                                                                                    //                            //
   //                                                                                    ////////////////////////////////
@@ -233,7 +231,7 @@ void loopSendCmd() {
 // Receive commands
 Receive_serial_1();
 Receive_serial_2();
-//   inf << np << " : L" << dirLeft << " Speed: "<< speeds.leftSpeed << " P: " << dirRight << " Speed: " << speeds.rightSpeed <<  " enable: " << buttonD << " LT: " << endl;
+//   inf << "Master speed: " << speeds.masterSpeed << " Slave speed: " << speeds.slaveSpeed << endl;
 loop_counter++;
 
 }

@@ -42,7 +42,7 @@ bool      timeoutMsgSbusRx      = 0;
 bool      timeoutMsgfailsafe    = 0;
 bool      timeoutMsglost_frame  = 0;
 
-int16_t leftStickX;    //
+int16_t rightStickX;    //
 int16_t leftStickY;    //
 bool starter;
 bool safetyStop;                                   // Sygnał z pilota RC
@@ -50,6 +50,7 @@ bool safetyStop;                                   // Sygnał z pilota RC
 // extern int16_t RightStickX;   //
 // extern int16_t RightStickY;   //
 int potentiometerValueA =0;
+int potentiometerValueB =0;
 int potentiometerValueC =0;
 uint16_t speed_Blynk;
 uint16_t steer_Blynk;
@@ -130,7 +131,7 @@ void loopReadSbusRx() {
       data.ch[0] = 1000;                      // Ustawiam 0 na joystiku
       data.ch[1] = 1000;                      // Ustawiam 0 na joystiku
       leftStickY = 0;                         // Ustawiam 0 na joystiku
-      leftStickX = 0;                         // Ustawiam 0 na joystiku
+      rightStickX = 0;                         // Ustawiam 0 na joystiku
       buttonD = 0;                            // Enable = 0;
       threePositionSwitchC = 1;               // Pozycja srodkowa
       data.failsafe = 1;
@@ -147,7 +148,7 @@ void loopReadSbusRx() {
       data.ch[0] = 1000;                      // Ustawiam 0 na joystiku
       data.ch[1] = 1000;                      // Ustawiam 0 na joystiku
       leftStickY = 0;                         // Ustawiam 0 na joystiku
-      leftStickX = 0;                         // Ustawiam 0 na joystiku
+      rightStickX = 0;                         // Ustawiam 0 na joystiku
       buttonD = 0;                            // Enable = 0;
       threePositionSwitchC = 1;               // Pozycja srodkowa
     } else {
@@ -165,7 +166,7 @@ void loopReadSbusRx() {
       data.ch[0] = 1000;
       data.ch[1] = 1000;
       leftStickY = 0; 
-      leftStickX = 0;
+      rightStickX = 0;
       buttonD = 0;                            // Enable = 0;
       threePositionSwitchC = 1;               // Pozycja srodkowa
       digitalWrite(SWITCH_2_IGNITION_PIN, LOW);       // Wyłączam zapłom
@@ -178,7 +179,7 @@ void loopReadSbusRx() {
 
 //----------------------KANAŁY Z ODBIORNIKA---------------------//
 //---------------------------------------------------------Kanał 0
-  leftStickX = scaleValue(data.ch[0], 306, 1693, -potentiometerValueA, potentiometerValueA, 985, 1015);
+  rightStickX = scaleValue(data.ch[0], 306, 1693, -potentiometerValueA, potentiometerValueA, 985, 1015);
 
 //---------------------------------------------------------Kanał 1
   leftStickY = scaleValue(data.ch[1], 306, 1693, -potentiometerValueC, potentiometerValueC, 985, 1015);
@@ -199,7 +200,7 @@ void loopReadSbusRx() {
   potentiometerValueC = scaleValue(data.ch[6], 306, 1694, 0, 800);  // Speed
 
 //---------------------------------------------------------Kanał 7
-  int potentiometerValueB = scaleValue(data.ch[7], 306, 1694, 0, 1023);
+  potentiometerValueB = scaleValue(data.ch[7], 306, 1694, 0, 1023);
 
 //---------------------------------------------------------Kanał 8
   int buttonB = (data.ch[8] > 1000) ? 1 : 0;
@@ -213,14 +214,14 @@ void loopReadSbusRx() {
   int potentiometerValueRight = scaleValue(data.ch[11], 306, 1694, 0, 180);
 
   if (sbusSafetyActive) {
-    leftStickX = 0;
+    rightStickX = 0;
     leftStickY = 0;
     activaiteClutch = 0;
     buttonD = 0;
     threePositionSwitchC = 1;
   }
 
-// Serial.print(leftStickX);
+// Serial.print(rightStickX);
 // Serial.print(" ");
 // Serial.print(leftStickY);
 // Serial.print(" ");

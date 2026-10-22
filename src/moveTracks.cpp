@@ -33,27 +33,12 @@ TrackSpeeds speeds;
 static int16_t INPUT_MAX = 1000;                                          // [-] Input target maximum limitation.
 static int16_t INPUT_MIN = -1000;                                         // [-] Input target minimum limitation.
 
-uint16_t OutputLewa;     
-uint16_t OutputPrawa;
-
-bool enable_1 = 0;
-bool enable_2 = 0;
-
-uint32_t axisValueY;
-uint32_t axisValueX;
-//uint16_t speed_Blynk;
-bool enable_Blynk;                                                       // [-] Variable from Blynk app.
-
-uint8_t test;                                                            // [-] Variable from Blynk app.
-uint8_t enable_off;                                                      // [-] Variable from Blynk app.
-uint8_t movement;                                                        // [-] Variable from Blynk app.
-
 //------------------------------------------------------------------------
 // procedures move tracks
 //------------------------------------------------------------------------ 
-void moveTracks(int leftStick, int rightStick) {
-    int speed = map(leftStick, -1000, 1000, -1000, 1000);
-    int rotation = map(rightStick, -1000, 1000, -1000, 1000);
+void moveTracks(int stick_Y, int stick_X) {
+    int speed = map(stick_Y, -1000, 1000, -1000, 1000);
+    int rotation = map(stick_X, -1000, 1000, -1000, 1000);
 
     int leftSpeed;
     int rightSpeed;
@@ -79,18 +64,15 @@ void moveTracks(int leftStick, int rightStick) {
         rightSpeed = -1000;
     }
     
-    enable_1 = 1; // enable_Blynk;      // Prawe
-    enable_2 = 1; // enable_Blynk;      // Lewe
-    
-    speeds.leftSpeed = leftSpeed;
-    speeds.rightSpeed = rightSpeed;
+    speeds.masterSpeed = leftSpeed;
+    speeds.slaveSpeed = rightSpeed;
 }
 
 //------------------------------------------------------------------------
 // procedures loop tracks
 //------------------------------------------------------------------------ 
 void loopTracks() {
-        moveTracks(leftStickY, leftStickX);                               // [-] RC remote control.
+        moveTracks(leftStickY, rightStickX);                               // [-] RC remote control.
 }
 
 //------------------------------------------------------------------------
